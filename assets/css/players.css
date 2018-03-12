@@ -1,0 +1,57 @@
+/****PLAYERS****/
+.img_player{
+    width: 40%;
+    margin-right: 5%;
+    margin-left: 5%; 
+    margin-bottom: 30px;
+    text-align: center;
+}
+.players .img_player img{
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+/****PLAYERS****/
+
+/****COMPETIDOR***/
+.player .img_player{
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+.player .img_player img{
+    border: 1px solid red;
+}
+.dados-jogador{
+    margin-top: 30px;
+}
+.dados-jogador li{
+    line-height: 25px;
+    font-weight: bold;
+}
+.dados-jogador{
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid red;
+}
+
+.quadrado{
+    width: 40%;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    margin-right: 5%;
+    margin-left: 5%;
+}
+.quadrado .titulo{
+    background-color: #5E4522;
+    font-size: 20px;
+}
+.quadrado .dados{
+    width: 100%;
+    display: block;
+    border: 1px solid blue;
+    background-color: #9D6417;
+    font-size: 20px;
+}
