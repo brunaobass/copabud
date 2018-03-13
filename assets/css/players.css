@@ -16,42 +16,62 @@
 /****COMPETIDOR***/
 .player .img_player{
     width: 100%;
+    max-width: 300px;
     text-align: center;
-    margin: 0;
+    margin: auto;
 }
 .player .img_player img{
-    border: 1px solid red;
+   
 }
 .dados-jogador{
     margin-top: 30px;
-}
-.dados-jogador li{
-    line-height: 25px;
-    font-weight: bold;
-}
-.dados-jogador{
+    border: 1px solid red;
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid red;
 }
-
+.dados-jogador li{
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.quadrados{
+    max-width: 340px;
+    margin: auto;
+    
+}
 .quadrado{
-    width: 40%;
+    width: 150px;
     text-align: center;
     font-weight: bold;
     color: #fff;
-    margin-right: 5%;
-    margin-left: 5%;
+    margin: 10px;
 }
 .quadrado .titulo{
     background-color: #5E4522;
     font-size: 20px;
+    height: 30px;
+    line-height: 30px;
 }
 .quadrado .dados{
     width: 100%;
     display: block;
-    border: 1px solid blue;
+    height: 90px;
+    line-height: 90px;
     background-color: #9D6417;
-    font-size: 20px;
+    font-size: 40px;
+}
+table{
+    border: 1px solid #333;
+    margin: auto;
+    margin-bottom: 50px
+}
+th,td{
+    padding: 5px 2%;
+    text-align: center;
+}
+th{
+    font-weight: bold;
+}
+tr{
+  border-bottom: 1px solid #333;  
 }

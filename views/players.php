@@ -43,27 +43,31 @@
                 ?>
         <article class="ultima-edicao">
             <h2>Jogos na última edição</h2>
-            <div class="quadrado float-left">
-                <h4 class="titulo">Total</h4>
-                <span class="dados"><?=$ultima_edicao['jogos']?></span>
+            <div class="quadrados">
+                <div class="quadrado float-left">
+                    <h4 class="titulo">Total</h4>
+                    <span class="dados"><?=$ultima_edicao['jogos']?></span>
+                </div>
+                <div class="quadrado float-left">
+                    <h4 class="titulo">Vitórias</h4>
+                    <span class="dados"><?=$ultima_edicao['vitorias']?></span>
+                </div>
+                <div class="quadrado float-left">
+                    <h4 class="titulo">Derrotas</h4>
+                    <span class="dados"><?=$ultima_edicao['derrotas']?></span>
+                </div>
+                <div class="quadrado float-left">
+                    <h4 class="titulo">Empates</h4>
+                    <span class="dados"><?=$ultima_edicao['empates']?></span>
+                </div>
+                <div class="quadrado float-left">
+                    <h4 class="titulo">Gols</h4>
+                    <span class="dados"><?=$ultima_edicao['gols_pro']?></span>
+                </div>
+                <div class="clear"></div>
             </div>
-            <div class="quadrado float-left">
-                <h4 class="titulo">Vitórias</h4>
-                <span class="dados"><?=$ultima_edicao['vitorias']?></span>
-            </div>
-            <div class="quadrado float-left">
-                <h4 class="titulo">Derrotas</h4>
-                <span class="dados"><?=$ultima_edicao['derrotas']?></span>
-            </div>
-            <div class="quadrado float-left">
-                <h4 class="titulo">Empates</h4>
-                <span class="dados"><?=$ultima_edicao['empates']?></span>
-            </div>
-            <div class="quadrado float-left">
-                <h4 class="titulo">Gols</h4>
-                <span class="dados"><?=$ultima_edicao['gols_pro']?></span>
-            </div>
-            <div class="clear"></div>
+            
+            
         </article>
         
         <h2>Estatísticas do jogador</h2>
