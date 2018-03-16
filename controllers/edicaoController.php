@@ -34,4 +34,11 @@ class edicaoController extends Controller{
         
         echo json_encode($participantes);
     }
+    public function listar_times(){
+        $equipes = new Equipes();
+        
+        $times = $equipes->listaEquipes();
+        
+        echo json_encode($times);
+    }
 }

@@ -40,14 +40,53 @@ function inserirParticipante(){
        dataType:'json',
        success:function(json){
            console.log("ENTROU");
-           $(area_participantes).append('<select name="participante"></select>');
+            addLabels(area_participantes);
+           $(area_participantes).append('<select name="participante[]" class="participante"></select>');
            for(var i in json){
-               $(area_participantes).find('select').append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
+               $(area_participantes).find('.participante').append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
                console.log("Participante:"+json[i].nome);
+               console.log("Indice:"+i);
            }
+           
+           inserirTime(area_participantes);
+           
        },
        error:function(){
            console.log("DEU RUIM");
        }
     });
+    $(area_participantes).append('<br><br>');
+    
+}
+
+function inserirTime(area_participantes){
+    $.ajax({
+       url:'http://localhost/copabud/edicao/listar_times',
+       dataType:'json',
+       success:function(json){
+           console.log("SAI DO CAIXÃO TANCREDO");
+           
+           $(area_participantes).append('<select name="time[]" class="time"></select>');
+           var last_id;
+           for(var i in json){
+               $(area_participantes).find('.time').append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
+               console.log("Times:"+json[i].nome);
+               
+           }
+           last_id = 0;
+           $(area_participantes).find('#time').append('<option value="'+last_id+'">...Nova Equipe</option>');
+       },
+       error:function(){
+           console.log("DEU RUIM");
+       }
+    });
+}
+
+function addBotoes(area_participantes){
+    $(area_participantes).append("<button class='btn-confirmar'>Confirmar</button>");
+}
+function addLabels(area_participantes){
+    $(area_participantes).append('<label>Jogador</label>');
+    $(area_participantes).append('<label>Time</label>');
+    $(area_participantes).append('<br>');
 }
