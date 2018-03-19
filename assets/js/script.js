@@ -13,8 +13,23 @@ $(function(){
         $("#btn-menu").show();
     });
     $("#btn-addparticipante").on('click',inserirParticipante);
+    
+    $(".time").click(function(){
+        var opcao = $(this).val();
+        alert(opcao);
+       $(".modal-time").fadeIn('fast'); 
+    });
+    //$(".time").val("0").trigger("change");
+    
+    $("#form-time .btn").on('click',function(e){
+        e.preventDefault();
+        $(".modal-time").fadeIn('fast'); 
+    });
 });
-
+function muda(){
+   var opcao = $(this).val();
+        alert(opcao);
+}
 function trocarImagem(){
     
     if(typeof(FileReader) !="undefined"){
@@ -43,7 +58,7 @@ function inserirParticipante(){
             addLabels(area_participantes);
            $(area_participantes).append('<select name="participante[]" class="participante"></select>');
            for(var i in json){
-               $(area_participantes).find('.participante').append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
+               $(area_participantes).find('.participante').last().append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
                console.log("Participante:"+json[i].nome);
                console.log("Indice:"+i);
            }
@@ -69,12 +84,12 @@ function inserirTime(area_participantes){
            $(area_participantes).append('<select name="time[]" class="time"></select>');
            var last_id;
            for(var i in json){
-               $(area_participantes).find('.time').append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
+               $(area_participantes).find('.time').last().append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
                console.log("Times:"+json[i].nome);
                
            }
            last_id = 0;
-           $(area_participantes).find('#time').append('<option value="'+last_id+'">...Nova Equipe</option>');
+           $(area_participantes).find('.time').last().append('<option value="'+last_id+'">...Nova Equipe</option>');
        },
        error:function(){
            console.log("DEU RUIM");

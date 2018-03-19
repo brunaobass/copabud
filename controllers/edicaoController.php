@@ -41,4 +41,9 @@ class edicaoController extends Controller{
         
         echo json_encode($times);
     }
+    public function inserir_time(){
+        
+        $this->loadView('insere-time');
+        
+    }
 }
