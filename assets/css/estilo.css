@@ -170,7 +170,7 @@ input:focus{
     position: absolute;
     visibility: hidden;
     top: -9999px;
-    left: 9999px;
+    left: -9999px;
 }
 .btn-enviar{
     background-color: #C0BC22;

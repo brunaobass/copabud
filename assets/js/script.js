@@ -1,3 +1,5 @@
+var url_imagem;
+var times
 $(function(){
     $("#btn_trocar_imagem").on('click',function(){
         $("#imagem_usuario").trigger("click");
@@ -14,18 +16,56 @@ $(function(){
     });
     $("#btn-addparticipante").on('click',inserirParticipante);
     
-    $(".time").click(function(){
+    $(document).on('change',".time",function(){
         var opcao = $(this).val();
-        alert(opcao);
-       $(".modal-time").fadeIn('fast'); 
+        if(opcao == 0){
+            $(".modal-time").fadeIn('fast'); 
+        }
+       
     });
-    //$(".time").val("0").trigger("change");
     
-    $("#form-time .btn").on('click',function(e){
+    $("#btn-cancelar").on('click',function(e){
         e.preventDefault();
-        $(".modal-time").fadeIn('fast'); 
+        $(".modal-time").fadeOut('fast'); 
     });
+    $("#form-time").on('submit',salvarTime);
 });
+function salvarTime(e){
+    e.preventDefault();
+    var dados = new FormData(this);
+    console.log(dados);
+    $.ajax({
+        url:'http://localhost/copabud/edicao/inserir_time',
+        type: 'POST',
+        data: dados,  
+        dataType:'json',
+        success:function(json){
+            $('.novo-time').before('<option value="'+json.id+'">'+json.nome+'</option>');
+            alert(dados);
+            console.log(json);
+        },
+        cache:false,
+        contentType:false,
+        processData:false,
+        
+        xhr:function(){
+            var myXhr = $.ajaxSettings.xhr();
+            
+            if(myXhr.upload){//verifica se há suporte à propriedade upload
+                myXhr.upload.addEventListener('progress',function(){
+                    //realiza alguma ação durante o processo de upload
+                    alert("Carregando...");
+                },false);
+            }
+            
+            return myXhr;
+        },
+        error:function(){
+            console.log("Erroa ao inserir equipe...");
+        }
+    });
+    $(".modal-time").fadeOut('fast'); 
+}
 function muda(){
    var opcao = $(this).val();
         alert(opcao);
@@ -38,6 +78,7 @@ function trocarImagem(){
 
         reader.onload = function(e){
             imagem_preview.attr("src",e.target.result);
+            url_imagem = e.target.result;
         }
         reader.readAsDataURL($("#imagem_usuario")[0].files[0]);
     }
@@ -89,7 +130,7 @@ function inserirTime(area_participantes){
                
            }
            last_id = 0;
-           $(area_participantes).find('.time').last().append('<option value="'+last_id+'">...Nova Equipe</option>');
+           $(area_participantes).find('.time').last().append('<option value="'+last_id+'" class="novo-time">...Nova Equipe</option>');
        },
        error:function(){
            console.log("DEU RUIM");

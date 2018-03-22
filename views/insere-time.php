@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="<?=BASE_URL?>assets/css/estilo.css">
-        <link rel="stylesheet" type="text/css" href="<?=BASE_URL?>assets/css/insere-time.css">
-    </head>
-    <body>
+
         <div class="modal-time">
         <div class="conteudo-modal">
             <form id="form-time" class="form-cadastro">
@@ -28,8 +21,3 @@
             </form>
         </div>
         </div>
-        <script src="<?=BASE_URL?>assets/js/jquery-3.2.1.min.js"></script>
-        <script src="<?=BASE_URL?>assets/js/bootstrap.min.js"></script>
-        <script src="<?=BASE_URL?>assets/js/script.js"></script>
-    </body>
-</html>

@@ -26,4 +26,15 @@ class Equipes extends Model {
         return $equipes;
     }
     
+    public function cadastraEquipe($nome,$sigla,$imagem){
+        $sql = "INSERT INTO equipes (nome,sigla,imagem) VALUES (:nome,:sigla,:imagem)";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(":nome",$nome);
+        $sql->bindValue(":sigla",$sigla);
+        $sql->bindValue(":imagem",$imagem);
+        
+        $sql->execute();
+        return $this->db->lastInsertId();
+    }
+    
 }

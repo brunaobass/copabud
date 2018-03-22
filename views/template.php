@@ -61,6 +61,7 @@ and open the template in the editor.
                     $this->loadViewInTemplate($viewName,$viewData);
                 ?>
             </div>
+            
         </main>
         
         <footer>
