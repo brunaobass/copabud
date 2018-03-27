@@ -1,5 +1,4 @@
 var url_imagem;
-var times
 $(function(){
     $("#btn_trocar_imagem").on('click',function(){
         $("#imagem_usuario").trigger("click");
@@ -18,18 +17,24 @@ $(function(){
     
     $(document).on('change',".time",function(){
         var opcao = $(this).val();
+        var primeiro = $(this).find('option').eq(0);
+        console.log(this);
+         $(primeiro).removeAttr("selected");
         if(opcao == 0){
             $(".modal-time").fadeIn('fast'); 
         }
+        $("#btn-cancelar").on('click',function(e){
+            e.preventDefault();
+            $(".modal-time").fadeOut('fast'); 
+            $(primeiro).attr("selected",'selected');
+    });
        
     });
     
-    $("#btn-cancelar").on('click',function(e){
-        e.preventDefault();
-        $(".modal-time").fadeOut('fast'); 
-    });
+    
     $("#form-time").on('submit',salvarTime);
 });
+
 function salvarTime(e){
     e.preventDefault();
     var dados = new FormData(this);
@@ -40,8 +45,14 @@ function salvarTime(e){
         data: dados,  
         dataType:'json',
         success:function(json){
-            $('.novo-time').before('<option value="'+json.id+'">'+json.nome+'</option>');
-            alert(dados);
+            if(typeof(json.erro)!='undefined'){
+                alert(json.erro);
+                $('.area_participantes').find('.time').first().attr("selected",'selected');
+            }
+            else{
+               $('.novo-time').before('<option value="'+json.id+'">'+json.nome+'('+json.sigla+')</option>'); 
+            }
+            
             console.log(json);
         },
         cache:false,
@@ -54,14 +65,13 @@ function salvarTime(e){
             if(myXhr.upload){//verifica se há suporte à propriedade upload
                 myXhr.upload.addEventListener('progress',function(){
                     //realiza alguma ação durante o processo de upload
-                    alert("Carregando...");
                 },false);
             }
             
             return myXhr;
         },
         error:function(){
-            console.log("Erroa ao inserir equipe...");
+            console.log("Erro ao inserir equipe...");
         }
     });
     $(".modal-time").fadeOut('fast'); 
@@ -99,7 +109,8 @@ function inserirParticipante(){
             addLabels(area_participantes);
            $(area_participantes).append('<select name="participante[]" class="participante"></select>');
            for(var i in json){
-               $(area_participantes).find('.participante').last().append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
+               $(area_participantes).find('.participante').last().append('<option value="'+json[i].id+'">'
+                       +json[i].nome+'</option>');
                console.log("Participante:"+json[i].nome);
                console.log("Indice:"+i);
            }
@@ -120,14 +131,11 @@ function inserirTime(area_participantes){
        url:'http://localhost/copabud/edicao/listar_times',
        dataType:'json',
        success:function(json){
-           console.log("SAI DO CAIXÃO TANCREDO");
-           
            $(area_participantes).append('<select name="time[]" class="time"></select>');
            var last_id;
            for(var i in json){
-               $(area_participantes).find('.time').last().append('<option value="'+json[i].id+'">'+json[i].nome+'</option>');
-               console.log("Times:"+json[i].nome);
-               
+               $(area_participantes).find('.time').last().append('<option value="'+json[i].id+'">'+json[i].nome+
+                       ' ('+json[i].sigla+')</option>');    
            }
            last_id = 0;
            $(area_participantes).find('.time').last().append('<option value="'+last_id+'" class="novo-time">...Nova Equipe</option>');

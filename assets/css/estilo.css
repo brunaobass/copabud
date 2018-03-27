@@ -211,5 +211,14 @@ footer{
     margin-right: 15px;
     color: #fff;
 }
-
+.tabela_times{
+    border: 2px solid #000;
+    margin: 20px auto;
+}
+.tabela_times td{
+    padding: 20px;
+}
+.tabela_times tr{
+    
+}
 /****RODAPÉ***/

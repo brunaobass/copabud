@@ -133,15 +133,18 @@
     margin:5px 10px;
 }
 .mandante,
-.visitante{
+.visitante,
+.resultado{
     width: 33%;
+    border: 1px solid red;
+    display: block;
 }
 
 .partida span{
     display: block;
     font-size: 20px;
     text-align: center;
-    width: 34%;
+    width: 33%;
     line-height: 38px;
 }
 
@@ -149,5 +152,8 @@
     height: 20px;
     border-top: 1px solid #888;
     background-color: #ccc;
+}
+.resultado span{
+    border:1px solid green;
 }
 /****CLASSIFICAÇÃO E JOGOS****/

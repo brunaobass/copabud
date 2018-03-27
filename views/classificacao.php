@@ -39,75 +39,55 @@
         </ul>
         <article class="jogos">
             <h3 class="cabecalho cabecalho-jogos">Jogos</h3>
-            <div class="rodada">
+            <?php
                 
+                echo 'Número de rodadas:'.$num_rodadas;
+                for($i=0;$i<$num_rodadas;$i++):
+                    //$num_partidas_rodada = intval($num_partidas_rodada);
+            ?>
+            <div class="rodada">
+                <h3 class="cabecalho cabecalho-jogos"><?=($i+1)?>ª Rodada
+                    <button class="prev"><i class="fa fa-chevron-left"></i></button>
+                    <button class="next"><i class="fa fa-chevron-right"></i></button>
+                </h3>
+
+                <?php   
+                    //$num_partidas_rodada = $num_partidas_rodada[0];
+                    $inicio = ($i*$num_partidas_rodada);
+                    $fim = ($i*$num_partidas_rodada)+$num_partidas_rodada;
+                    for ($j=$inicio;$j< $fim ; $j++):
+                ?>
+                <div class="partida">
+                    <p class="data-jogo">10/10/2020 | 15:00</p>
+                    <figure class="mandante float-left">
+                        <figcaption class="float-right"><?=$partidas[$j]['mandante']?></figcaption>
+                        <img class="float-right" src="<?=BASE_URL?>assets/images/clube.png"> 
+                        
+                    </figure>
+                    <div class="resultado float-left">
+                        <span contenteditable="true" class="gols-pro float-left">0</span>
+                        <span class="float-left">X</span>
+                        <span contenteditable="true" class="gols-contra float-right" >0</span>
+                        
+                    </div>
+                    
+                    <figure class="visitante float-right">
+                        <figcaption class="float-left"><?=$partidas[$j]['visitante']?></figcaption>
+                        <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png"> 
+                        
+                    </figure>
+                    <div class="clear"></div>
+                    <div class="partida-rodape"></div>
+                </div>
+                <?php
+                    endfor;
+                ?>
             </div>
-            <h3 class="cabecalho cabecalho-jogos">1ª Rodada
-                <button class="prev"><i class="fa fa-chevron-left"></i></button>
-                <button class="next"><i class="fa fa-chevron-right"></i></button>
-            </h3>
+            <?php
+                endfor;
+            ?>
             
             
-            <div class="partida">
-                <p class="data-jogo">10/10/2020 | 15:00</p>
-                <figure class="mandante float-left">
-                    <figcaption class="float-right">MCI</figcaption>
-                    <img class="float-right" src="<?=BASE_URL?>assets/images/clube.png">                   
-                </figure>
-                <span class="float-left">X</span>
-                <figure class="visitante float-right">
-                    <figcaption class="float-left">MCI</figcaption>
-                    <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png">      
-                </figure>
-                <div class="clear"></div>
-                <div class="partida-rodape"></div>
-            </div>
-            
-            <div class="partida">
-                <p class="data-jogo">10/10/2020 | 15:00</p>
-                <figure class="mandante float-left">
-                    <figcaption class="float-right">MCI</figcaption>
-                    <img class="float-right" src="<?=BASE_URL?>assets/images/clube.png">                   
-                </figure>
-                <span class="float-left">X</span>
-                <figure class="visitante float-right">
-                    <figcaption class="float-left">MCI</figcaption>
-                    <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png">      
-                </figure>
-                <div class="clear"></div>
-                <div class="partida-rodape"></div>
-            </div>
-            
-            <div class="partida">
-                <p class="data-jogo">10/10/2020 | 15:00</p>
-                <figure class="mandante float-left">
-                    <figcaption class="float-right">MCI</figcaption>
-                    <img class="float-right" src="<?=BASE_URL?>assets/images/clube.png">                   
-                </figure>
-                <span class="float-left">X</span>
-                <figure class="visitante float-right">
-                    <figcaption class="float-left">MCI</figcaption>
-                    <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png">      
-                </figure>
-                <div class="clear"></div>
-                <div class="partida-rodape"></div>
-            </div>
-            
-            <div class="partida">
-                <p class="data-jogo">10/10/2020 | 15:00</p>
-                <figure class="mandante float-left">
-                    <figcaption class="float-right">MCI</figcaption>
-                    <img class="float-right" src="<?=BASE_URL?>assets/images/clube.png">                   
-                </figure>
-                <span class="float-left">X</span>
-                <figure class="visitante float-right">
-                    <figcaption class="float-left">MCI</figcaption>
-                    <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png">      
-                </figure>
-                <div class="clear"></div>
-                <div class="partida-rodape"></div>
-            </div>
-            
-            
+       
         </article>
     </section>

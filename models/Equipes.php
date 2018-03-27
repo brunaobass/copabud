@@ -36,5 +36,21 @@ class Equipes extends Model {
         $sql->execute();
         return $this->db->lastInsertId();
     }
-    
+    public function verificaTime($nome,$sigla){
+        $sql = "SELECT id FROM equipes WHERE nome = :nome OR sigla = :sigla";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":nome",$nome);
+        $sql->bindValue(":sigla",$sigla);
+        
+        $sql->execute();
+        
+        if($sql->rowCount() > 0){
+            return true;
+        }
+        else {
+            return false;
+        }
+        
+    }
 }

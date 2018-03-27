@@ -15,7 +15,12 @@ class classificacaoController extends Controller{
         $dados['titulo_h1'] = 'Classificaçãoe Jogos';
         
         $classif = new Classificacao();
+        $partidas = new Partidas();
+        
         $dados['classificacao'] = $classif->getClassificao();
+        $dados['partidas'] = $partidas->getPartidas(2);
+        $dados['num_rodadas'] = $partidas->getTotalRodadas(2);
+        $dados['num_partidas_rodada'] = $partidas->getPartidasRodada(1);
         
         $this->loadTemplate('classificacao',$dados);
     }

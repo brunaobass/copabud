@@ -1,7 +1,13 @@
 <section class="criar">
-    <button id="btn-addparticipante" class="btn btn-enviar">Adicionar Jogador</button>
-    <form method="POST">
+    <button id="btn-addparticipante" class="btn btn-enviar">Adicionar Participante</button>
+    <form method="POST" action="<?=BASE_URL?>edicao/gerar_tabela">
+        <fieldset class="area_edicao">
+            <label>Edição</label>
+            <input type="text" name="edicao">
+            
+        </fieldset>
         <fieldset class="area_participantes"></fieldset>
+        <button class="btn btn-enviar">Criar</button>
     </form>
     
 </section>
