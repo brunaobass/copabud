@@ -51,6 +51,17 @@ class Equipes extends Model {
         else {
             return false;
         }
+    }
+    
+    public function getEquipe($id_equipe){
+        $sql = "SELECT * FROM equipes WHERE id = :id_equipe";
+        $sql = $this->db->prepare($sql);
         
+        $sql->bindValue(":id_equipe",$id_equipe);
+        $sql->execute();
+        
+        if($sql->rowCount() > 0){
+            return $sql->fetch();
+        }
     }
 }

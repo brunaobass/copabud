@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -13,11 +13,11 @@
  */
 class Partidas extends Model {
     //put your code here
-    public function inserePartida($rodada,$mandante,$visitante){
-        $sql = "INSERT INTO partidas (id_edicao,rodada,mandante,visitante) VALUES (2,?,?,?)";
+    public function inserePartida($id_edicao,$rodada,$mandante,$visitante){
+        $sql = "INSERT INTO partidas (id_edicao,rodada,id_mandante,id_visitante) VALUES (?,?,?,?)";
         
         $sql = $this->db->prepare($sql);
-        $sql->execute(array($rodada,$mandante,$visitante));
+        $sql->execute(array($id_edicao,$rodada,$mandante,$visitante));
     }
     
     public function getPartidas($id_edicao){
@@ -62,5 +62,18 @@ class Partidas extends Model {
         } 
         
         return $resultado['num_partidas_rodadas'];
+    }
+    
+    public function verificaPartidaRealizada($id_partida){
+        $sql = "SELECT partida_jogada FROM partidas WHERE id = :id_partida AND partida_jogada = 1";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_partida",$id_partida);
+        $sql->execute();
+        if($sql->rowCount() > 0){
+            return true;
+        }
+        
+        return false;
     }
 }

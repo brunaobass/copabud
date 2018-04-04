@@ -120,13 +120,15 @@
 }
 .partida figcaption,
 .partida img,
-.partida span{
+.partida span,
+.partida input{
     height: 38px;
     margin: 5px 0;
 }
 .partida figcaption{
     font-size: 14px;   
     line-height: 38px;
+    width: 30px;
 }
 .partida img{
     width: 38px;
@@ -136,24 +138,28 @@
 .visitante,
 .resultado{
     width: 33%;
-    border: 1px solid red;
+
     display: block;
 }
 
-.partida span{
-    display: block;
+.partida span,
+.partida input{
     font-size: 20px;
     text-align: center;
     width: 33%;
     line-height: 38px;
 }
-
+.partida span{
+    display: block;
+}
+.partida input{
+    display: none;
+    padding-left: 0;
+    
+}
 .partida-rodape{
     height: 20px;
     border-top: 1px solid #888;
     background-color: #ccc;
-}
-.resultado span{
-    border:1px solid green;
 }
 /****CLASSIFICAÇÃO E JOGOS****/

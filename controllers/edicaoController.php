@@ -14,10 +14,10 @@
 class edicaoController extends Controller{
     
     public function index(){
-        
+        $this->criar();
     }
     
-    public function criar(){
+    public function criar(){//chama a página utilizada para inserir os dados para criação de uma nova edição do torneio
         $dados = array(
             "titulo_pagina"=>"Nova Edição",
             "titulo_h1"=>"Nova Edição",
@@ -28,17 +28,17 @@ class edicaoController extends Controller{
     }
     
     public function listar_players(){
+        //busca os jogadores cadastrados, para deixá-los disponíveis como opção 
+        //na página de criação da nova edição
         $players = new Players();
-        
         $participantes = $players->listaPlayers();
-        
         echo json_encode($participantes);
     }
     public function listar_times(){
+        //busca os jogadores cadastrados, para deixá-los disponíveis como opção 
+        //na página de criação da nova edição
         $equipes = new Equipes();
-        
         $times = $equipes->listaEquipes();
-        
         echo json_encode($times);
     }
     public function inserir_time(){
@@ -51,9 +51,7 @@ class edicaoController extends Controller{
                 echo json_encode($json);
                 exit;
             }
-        
         }
-        
         if(isset($_FILES['arquivo']) && !empty($_FILES['arquivo']['tmp_name'])){
             $imagem = $this->salvaFoto($_FILES['arquivo']);        
         }
@@ -70,13 +68,13 @@ class edicaoController extends Controller{
         echo json_encode($json);
     }
     private function verificaTime($nome,$sigla){
+        //verifica se o novo time inserido já está cadastrado no banco de dados
         $equipes = new Equipes();
-        
         return $equipes->verificaTime($nome, $sigla);
     }
 
     private function salvaFoto($arquivo){
-       
+       //verifica se o arquivo é válido salva a imagem do time no servidor
         switch ($arquivo['type']){
             case "image/jpeg" :
                 $extensao = ".jpg";
@@ -98,14 +96,28 @@ class edicaoController extends Controller{
         
         return $nome_arquivo;
     }
-    
-    public function gerar_tabela(){
+    private function cria_edicao($edicao){
+        $edicoes = new Edicoes();        
+        return $edicoes->inserirEdicao($edicao);
+    }
+
+    private function cadastra_participantes($participantes,$times,$id_edicao){
         
+        $edicoes = new Edicoes();
+        
+        for($i = 0;$i<count($participantes);$i++){
+           echo '<br>ID Edição '.$i.':'.$id_edicao.'<br>';
+           $edicoes->inserirPlayersEdicao($participantes[$i], $id_edicao, $times[$i]);
+        }
+        
+    }
+    public function gerar_tabela(){
+        //gera a tabela com as equipes participantes e redireciona para a página de classificação e jogos
         $dados = array();
         $rodadas = array();
         
         if(isset($_POST)){
-            var_dump($_POST);
+            
             $participantes = $_POST['participante'];
             $times = $_POST['time'];
             $edicao = filter_input(INPUT_POST, 'edicao',FILTER_SANITIZE_STRING);
@@ -114,22 +126,33 @@ class edicaoController extends Controller{
             $copia_times = array_unique($times);
             
             if((count($copia_participantes)!= count($participantes))|| (count($copia_times)!= count($times))){
-                echo "Não é permitido equipes ou participantes repetidos...<br>";
+                $dados['erro'] = "Não é permitido equipes ou participantes repetidos...";
+                $this->loadTemplate("tabela",$dados);
+                exit;
             }
+            $id_edicao = $this->cria_edicao($edicao);
+            echo '<br>ID retornado:'.$id_edicao.'<br>';
+            $this->cadastra_participantes($participantes, $times, $id_edicao);
         }
         else{
             echo 'ERRO AO CADASTRAR PARTICIPANTES...<br>';
         }
-        exit;
+        
         global $mandantes;
         global $visitantes;
-        $mandantes = array("Barcelona","Chelsea","Real Madrid","Manchester United");
-        $visitantes = array("Bayern","PSG","Liverpool","Manchester City");
+        $mandantes = array();
+        $visitantes = array();
         
-        $num_partidas = count($visitantes); 
+        $num_partidas = count($participantes)/2;
+        for($i=0;$i<$num_partidas;$i++){
+            $mandantes[$i] = $times[$i]; 
+            $visitantes[$i] = $times[$i+$num_partidas];
+        }
+        
+        /*var_dump($mandantes);
+        var_dump($visitantes);
+        exit;*/
         $num_times = $num_partidas*2;
-        $temp = "bibo";
-        $temp2 = "bobi";
         
         $partidas = new Partidas();
         for($rodada = 0;$rodada<($num_times-1);$rodada++){
@@ -170,9 +193,10 @@ class edicaoController extends Controller{
             }  
     }
     private function inserirPartida($rodada,$mandantes,$visitantes,$partidas,$num_partidas){
-        
+        $edicoes = new Edicoes();
+        $id_edicao = $edicoes->getUltimaEdicao();
         for($i=0;$i<$num_partidas;$i++){
-            $partidas->inserePartida($rodada, $mandantes[$i], $visitantes[$i]);
+            $partidas->inserePartida($id_edicao,$rodada, $mandantes[$i], $visitantes[$i]);
         }
     }
 }
