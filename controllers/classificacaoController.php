@@ -37,11 +37,58 @@ class classificacaoController extends Controller{
         $dados['partidas'] = $lista_partidas;
         $dados['num_rodadas'] = $partidas->getTotalRodadas($id_edicao);
         $dados['num_partidas_rodada'] = $partidas->getPartidasRodada($id_edicao);
+        $dados['id_edicao'] = $id_edicao;
         $this->loadTemplate('classificacao',$dados);
     }
     
-    public function verifica_partida($id){
+    public function verifica_partida(){
+
+        if(isset($_POST['id'])){
+            $id = $_POST['id'];
+        }
         $partidas = new Partidas();
-        return $partidas->verificaPartidaRealizada($id);
+        echo $partidas->verificaPartidaRealizada($id);
+    }
+    
+    public function atualiza_empate(){
+        if(isset($_POST)){
+            $id_mandante = filter_input(INPUT_POST, 'id_mandante',FILTER_VALIDATE_INT);
+            $id_visitante = filter_input(INPUT_POST, 'id_visitante',FILTER_VALIDATE_INT);
+        }
+        
+        $classificacao = new Classificacao();
+        $classificacao->atualizaResultado($id_edicao,$id_mandante,"empates");
+        $classificacao->atualizaResultado($id_edicao,$id_visitante,"empates");
+    }
+    public function atualiza_vitoria(){
+        if(isset($_POST)){
+            $id_vencedor = filter_input(INPUT_POST, 'id_vencedor',FILTER_VALIDATE_INT);
+            $id_perdedor = filter_input(INPUT_POST, 'id_perdedor',FILTER_VALIDATE_INT);
+        }
+        
+        $classificacao = new Classificacao();
+        $classificacao->atualizaResultado($id_edicao,$id_vencedor,"vitorias");
+        $classificacao->atualizaResultado($id_edicao,$id_perdedor,"derrotas");
+    }
+    
+    public function atualiza_classificacao(){
+        print_r($_POST);
+        if(isset($_POST)){
+            $id_edicao = filter_input(INPUT_POST, 'id_edicao',FILTER_VALIDATE_INT);
+            $id_equipe = filter_input(INPUT_POST, 'id_equipe',FILTER_VALIDATE_INT);
+            $pontos =  filter_input(INPUT_POST, 'pontos',FILTER_VALIDATE_INT);
+            $tipo_resultado = filter_input(INPUT_POST, 'tipo_resultado',FILTER_SANITIZE_STRING);
+            $anula = $_POST['anula'];
+            echo "<br>ID Edição:".$id_edicao;
+            echo "<br>ID Equipe:".$id_equipe;
+            echo "<br>ID Pontos:".$pontos;
+            echo "<br>ID Tipo de resultado:".$tipo_resultado;
+            echo "<br>ID Partida anulada:".$anula;
+            
+        }
+        
+        $classificacao = new Classificacao();
+        $classificacao->atualizaClassificacao($id_edicao,$id_equipe,$pontos,$tipo_resultado.'s',$anula);
+        
     }
 }

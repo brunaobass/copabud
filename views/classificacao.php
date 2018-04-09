@@ -1,6 +1,6 @@
 <section class="classificacao-jogos">
         <h2>Classificação e Resultados</h2>
-        <ul class="classificacao"> 
+        <ul class="classificacao" id="tabela_classificacao"> 
             <li class="cabecalho cabecalho-classificacao">
                 <div class="nome-time float-left">Equipe</div>
                 <div class="pontos smallbox float-left">P</div>
@@ -37,7 +37,9 @@
         </ul>
         <article class="jogos">
             <h3 class="cabecalho cabecalho-jogos">Jogos</h3>
+            <input type="hidden" id="id_edicao" value="<?=$id_edicao?>">
             <?php
+                
                 for($i=0;$i<$num_rodadas;$i++):
             ?>
             <div class="rodada">
@@ -50,6 +52,14 @@
                     $inicio = ($i*$num_partidas_rodada);
                     $fim = ($i*$num_partidas_rodada)+$num_partidas_rodada;
                     for ($j=$inicio;$j< $fim ; $j++):
+                        if($partidas[$j]['partida_jogada']==0){
+                            $gols_mandante = '-';
+                            $gols_visitante = '-';
+                        }
+                        else{
+                            $gols_mandante = $partidas[$j]['gols_mandante'];
+                            $gols_visitante = $partidas[$j]['gols_visitante'];
+                        }
                 ?>
                 <div class="partida">
                     <p class="data-jogo">10/10/2020 | 15:00</p>
@@ -59,18 +69,19 @@
                     </figure>
                     <div class="resultado float-left">
                         <input type="hidden" class="id_partida" value="<?=$partidas[$j]['id']?>">
+                        <input type="hidden" class="partida_jogada" value="<?=$partidas[$j]['partida_jogada']?>">
                         <div>
-                            <span class="gols-span float-left">-</span>
+                            <span class="gols-span float-left"><?=$gols_mandante?></span>
                             <input type="text"class="gols-input float-left">
-                            <input type="hidden" class="id_mandante" value="8">
+                            <input type="hidden" class="id_mandante" value="<?=$partidas[$j]['mandante']['id']?>">
                         </div>
                         
                         <span class="float-left">X</span>
                         
                         <div>
-                            <span class="gols-span float-right" >-</span>
+                            <span class="gols-span float-right" ><?=$gols_visitante?></span>
                             <input type="text"class="gols-input float-right">
-                            <input type="hidden" class="id_visitante" value="5">
+                            <input type="hidden" class="id_visitante" value="<?=$partidas[$j]['visitante']['id']?>">
                         </div>
                         
                         

@@ -19,7 +19,25 @@ class Partidas extends Model {
         $sql = $this->db->prepare($sql);
         $sql->execute(array($id_edicao,$rodada,$mandante,$visitante));
     }
+    public function atualizaPartida($id,$gols_mandante,$gols_visitante){
+        $sql = "UPDATE partidas SET gols_mandante = :gols_mandante, gols_visitante = :gols_visitante, partida_jogada = 1"
+                . " WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(":gols_mandante",$gols_mandante);
+        $sql->bindValue(":gols_visitante",$gols_visitante);
+        $sql->bindValue(":id",$id);
+        
+        $sql->execute();
+    }
     
+    public function cancelaPartida($id){
+        $sql = "UPDATE partidas SET gols_mandante = 0, gols_visitante = 0, partida_jogada = 0"
+                . " WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(":id",$id);
+        
+        $sql->execute();
+    }
     public function getPartidas($id_edicao){
         $partidas = array();
         $sql = "SELECT * FROM partidas WHERE id_edicao = :id_edicao";

@@ -28,5 +28,23 @@ class Classificacao extends Model{
         
         return $classificao;
     }
-    
+    public function atualizaClassificacao($id_edicao,$id_equipe,$pontos,$tipo_resultado,$anula){
+        
+        
+        if($anula == 1){
+            $valor_tipo_resultado = "-1";
+            $pontos*= -1;
+        }
+        else {
+            $valor_tipo_resultado = "+1";
+        }
+        echo "<br>Valor tipo de resultado:".$valor_tipo_resultado;
+        $sql = "UPDATE players_edicao SET ".$tipo_resultado." = ".$tipo_resultado.$valor_tipo_resultado.", pontos = pontos+".$pontos
+                . " WHERE id_edicao = :id_edicao AND id_equipe = :id_equipe";
+        
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->bindValue(":id_equipe",$id_equipe);
+        $sql->execute();
+    }
 }

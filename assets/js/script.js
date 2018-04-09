@@ -1,7 +1,8 @@
 var url_imagem;
 var id_participante = 1;
 var primeiro;
-
+var realizada;
+var id_edicao;
 /******************
  *MODAL DE IMAGENS
  *****************/
@@ -53,15 +54,29 @@ $(function(){
  * ATUALIZAÇÃO DE RESULTADOS NA PÁGINA CLASSIFICAÇÃO
  ******************************/
     $(".gols-span").on('click',function(){
-       var campo = $(this);
+       var campo_clicado = $(this);
        var parent_parent = $(this).parent().parent();
        var id_partida = parent_parent.find('.id_partida').val();
+       var partida_jogada = parent_parent.find('.partida_jogada').val();
+       id_edicao = $("#id_edicao").val();
+       
        console.log("ID da partida:"+id_partida);
+       
        var input = $(this).parent().find('input[type=text]');
        
        var gols = $(this).html();
-       var gols_mandante;
-       var gols_visitante;
+       var gols_mandante = Array();;
+       var gols_visitante = Array();
+       //PEGANDO OS GOLS A PARTIR DO HTML DO SPAN
+       gols_mandante[0] = parent_parent.find('.gols-span').eq(0).html();
+       gols_visitante[0]= parent_parent.find('.gols-span').eq(1).html();
+       
+       
+      
+            gols_mandante[1] = gols_mandante[0];
+            gols_visitante[1] = gols_visitante[0];
+
+
        var regra = /^[0-9]+$/;
        $(this).hide();
        
@@ -73,31 +88,39 @@ $(function(){
        }
        input.show();
        input.select();
-      
+       
        var noBlur = false;
        input.blur(function(){
            if(!noBlur){//evita que o evento blur dispare mais de uma vez sem necessidade
-                gols_mandante = parent_parent.find('input[type=text]').eq(0).val();
-                gols_visitante = parent_parent.find('input[type=text]').eq(1).val();
+             
                 noBlur = true;
-                $(this).hide();
+                $(this).hide(); 
                 gols = $(this).val();
 
                 if(gols.match(regra)){//verifica se o valor digitado foi um número inteiro
-                    campo.html(gols);//caso seja, atualiza o resultado
+                    campo_clicado.html(gols);//caso seja, atualiza o resultado
+                    gols_mandante[1] = parent_parent.find('.gols-span').eq(0).html();
+                    gols_visitante[1]= parent_parent.find('.gols-span').eq(1).html();
                 }
                 else{
-                    campo.html('-');//caso contrário não atualiza e insere o hífen para sinalizar que a partida
+                    campo_clicado.html('-');//caso contrário não atualiza e insere o hífen para sinalizar que a partida
                     //ainda não possui resultados
                 }
-                if(gols_mandante.match(regra) && gols_visitante.match(regra)){
+                
+                if(gols_mandante[1].match(regra) && gols_visitante[1].match(regra)){
                     //verifica se ambos os campos estão preenchidos com resultados numéricos
-                    if(verificaPartidaJogada(id_partida)){
-                        anularResultado(id_partida,gols_mandante,gols_visitante,parent_parent);
+                    
+                    anularResultado(id_partida,gols_mandante[0],gols_visitante[0],parent_parent);
+                    console.log("CAMPO CLICADO:"+campo_clicado.html());
+                    if(campo_clicado.html() != '-'){
+                        salvarResultado(id_partida,gols_mandante[1],gols_visitante[1],parent_parent);
                     }
-                    salvarResultado(id_partida,gols_mandante,gols_visitante,parent_parent);
+                    
+                    
+                        
+  
                 }
-                campo.show(); 
+                campo_clicado.show(); 
            }
            
        });
@@ -105,16 +128,17 @@ $(function(){
     });
 });
 
-function salvarResultado(gols_mandante,gols_visitante, parent_parent){
-    
-
-    var id_mandante = parent_parent.find('.id_mandante').val()
-    var id_visitante = parent_parent.find('.id_visitante').val();
+function salvarResultado(id_partida,gols_mandante,gols_visitante, parent_parent){
+    salvarPartida(id_partida,gols_mandante,gols_visitante);
+    console.log("ENTROU EM SALVAR RESULTADO...");
+    var id_mandante = parseInt(parent_parent.find('.id_mandante').val()) ;
+    var id_visitante = parseInt(parent_parent.find('.id_visitante').val());
     var id_vencedor;
     var id_perdedor;
     
     if(gols_mandante === gols_visitante){
-        atualizaEmpate(id_mandante,id_visitante);
+        atualizaClassificacao(id_mandante,1,"empate",0);
+        atualizaClassificacao(id_visitante,1,"empate",0);
     }
     else{
         if(gols_mandante > gols_visitante){
@@ -122,32 +146,91 @@ function salvarResultado(gols_mandante,gols_visitante, parent_parent){
             id_perdedor = id_visitante;
         }
         else{
+            id_vencedor = id_visitante;
+            id_perdedor = id_mandante;
+        }
+        atualizaClassificacao(id_vencedor,3,"vitoria",0);
+        atualizaClassificacao(id_perdedor,0,"derrota",0);
+    }
+    //atualizaResultado(id_partida, id_mandante,id_visitante,gols_mandante,gols_visitante);
+}
+function anularResultado(id_partida,gols_mandante,gols_visitante,parent_parent){
+    
+    cancelaPartida(id_partida);
+    var id_mandante = parseInt(parent_parent.find('.id_mandante').val()) ;
+    var id_visitante = parseInt(parent_parent.find('.id_visitante').val());
+    var id_vencedor;
+    var id_perdedor;
+    console.log("ENTROU EM ANULAR RESULTADO...");
+    if(gols_mandante === gols_visitante){
+        atualizaClassificacao(id_mandante,1,"empate",1);
+        atualizaClassificacao(id_visitante,1,"empate",1);
+    }
+    else{
+        if(gols_mandante > gols_visitante){
             id_vencedor = id_mandante;
             id_perdedor = id_visitante;
         }
-        atualizaVitoria(id_vencedor,id_perdedor);
+        else{
+            id_vencedor = id_visitante;
+            id_perdedor = id_mandante;
+        }
+        atualizaClassificacao(id_vencedor,3,"vitoria",1);
+        atualizaClassificacao(id_perdedor,0,"derrota",1);
     }
 }
-
-function atualizaEmpate(id_mandante,id_visitante){
-    
-}
-
-function atualizaVitoria(){
-    
-}
-
-function verificaPartidaJogada(id_partida){
-    
-    var realizada;//condição que verifica se a partida já ocorreu
+function salvarPartida(id_partida,gols_mandante,gols_visitante){
+    console.log("Entrou em salvar partida");
     $.ajax({
-        url:''
+        url:'http://localhost/copabud/partida/salva_partida/',
+        type:'POST',
+        data:{
+            id_partida:id_partida,
+            gols_mandante:gols_mandante,
+            gols_visitante:gols_visitante
+        },
+        success:function(){
+            console.log("Partida salva com sucesso...");
+        },
+        error:function(){
+            console.log("Erro ao salvar partida...");
+        }
     });
 }
+function cancelaPartida(id){
+    $.ajax({
+        url:'http://localhost/copabud/partida/cancela_partida/',
+        type:'POST',
+        data:{id:id},
+        success:function(){
+            console.log("Partida cancelada com sucesso...");
+        },
+        error:function(){
+            console.log("Erro ao cancelar partida...");
+        }
+    });
+}
+function atualizaClassificacao(id_equipe,pontos,tipo_resultado,anula){
+    $.ajax({
+        url:'http://localhost/copabud/classificacao/atualiza_classificacao/',
+        type:'POST',
+        data:{
+            id_edicao:id_edicao,
+            id_equipe:id_equipe,
+            pontos:pontos,
+            tipo_resultado:tipo_resultado,
+            anula:anula,
+        },
+        success:function(){
+          //$("#tabela_classificacao").load('#tabela_classificacao');
+        }
+ 
+    });
+}
+
 function salvarTime(e){
     e.preventDefault();
     var dados = new FormData(this);
-    console.log(dados);
     $.ajax({
         url:'http://localhost/copabud/edicao/inserir_time',
         type: 'POST',
@@ -161,8 +244,6 @@ function salvarTime(e){
             else{
                $('.novo-time').before('<option value="'+json.id+'">'+json.nome+'('+json.sigla+')</option>'); 
             }
-            
-            console.log(json);
         },
         cache:false,
         contentType:false,
@@ -214,7 +295,6 @@ function inserirParticipante(){
        url:'http://localhost/copabud/edicao/listar_players',
        dataType:'json',
        success:function(json){
-           console.log("ENTROU");
             addLabels(area_participantes);
            $(area_participantes).append('<select name="participante[]" class="participante" id="player_'+id_participante+'"></select>');
            for(var i in json){
