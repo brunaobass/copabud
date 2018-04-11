@@ -15,7 +15,8 @@ class Partidas extends Model {
     //put your code here
     public function inserePartida($id_edicao,$rodada,$mandante,$visitante){
         $sql = "INSERT INTO partidas (id_edicao,rodada,id_mandante,id_visitante) VALUES (?,?,?,?)";
-        
+        echo '<br>ID MANDANTE:'.$mandante;
+        echo '<br>ID VISITANTE:'.$visitante;
         $sql = $this->db->prepare($sql);
         $sql->execute(array($id_edicao,$rodada,$mandante,$visitante));
     }
@@ -94,4 +95,12 @@ class Partidas extends Model {
         
         return false;
     }
+    public function resetaPartidas($id_edicao){
+        $sql = "UPDATE partidas SET gols_mandante = 0, gols_visitante = 0, partida_jogada = 0 WHERE id_edicao = :id_edicao";
+        
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->execute();
+    }
+
 }

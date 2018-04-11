@@ -25,4 +25,14 @@ class partidaController extends Controller{
         $partida = new Partidas();
         $partida->cancelaPartida($id);
     }
+    public function resetar(){
+       if(isset($_POST)){
+           $id_edicao= filter_input(INPUT_POST, 'id_edicao',FILTER_VALIDATE_INT);
+       }
+
+       $partida = new Partidas();
+       $partida->resetaPartidas($id_edicao);
+   }
+
+
 }

@@ -72,23 +72,32 @@ class classificacaoController extends Controller{
     }
     
     public function atualiza_classificacao(){
-        print_r($_POST);
         if(isset($_POST)){
             $id_edicao = filter_input(INPUT_POST, 'id_edicao',FILTER_VALIDATE_INT);
             $id_equipe = filter_input(INPUT_POST, 'id_equipe',FILTER_VALIDATE_INT);
             $pontos =  filter_input(INPUT_POST, 'pontos',FILTER_VALIDATE_INT);
             $tipo_resultado = filter_input(INPUT_POST, 'tipo_resultado',FILTER_SANITIZE_STRING);
-            $anula = $_POST['anula'];
-            echo "<br>ID Edição:".$id_edicao;
-            echo "<br>ID Equipe:".$id_equipe;
-            echo "<br>ID Pontos:".$pontos;
-            echo "<br>ID Tipo de resultado:".$tipo_resultado;
-            echo "<br>ID Partida anulada:".$anula;
-            
+            $gols_pro =  filter_input(INPUT_POST, 'gols_pro',FILTER_VALIDATE_INT);
+            $gols_contra =  filter_input(INPUT_POST, 'gols_contra',FILTER_VALIDATE_INT);
+            $anula = $_POST['anula']; 
         }
         
         $classificacao = new Classificacao();
-        $classificacao->atualizaClassificacao($id_edicao,$id_equipe,$pontos,$tipo_resultado.'s',$anula);
+        $classificacao->atualizaClassificacao($id_edicao,$id_equipe,$pontos,$tipo_resultado.'s',$gols_pro,$gols_contra,$anula);
+        
+        $classificacao_atual = $classificacao->getClassificao($id_edicao);
+        
+        echo json_encode($classificacao_atual);
         
     }
+    
+    public function resetar(){
+         if(isset($_POST)){
+            $id_edicao= filter_input(INPUT_POST, 'id_edicao',FILTER_VALIDATE_INT);
+        }
+        
+        $classificacao = new Classificacao();
+        $classificacao->resetaClassificacao($id_edicao);
+    }
 }
+

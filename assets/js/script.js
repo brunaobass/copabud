@@ -20,6 +20,12 @@ $(function(){
         $(this).hide();
         $("#btn-menu").show();
     });
+    $('#btn-resetar-classificacao').on('click',function(e){
+       e.preventDefault();
+       resetaPartidas(6);
+       resetaClassificacao(6);
+       
+    });
  /******************
  *MODAL DE IMAGENS
  *****************/
@@ -70,11 +76,9 @@ $(function(){
        //PEGANDO OS GOLS A PARTIR DO HTML DO SPAN
        gols_mandante[0] = parent_parent.find('.gols-span').eq(0).html();
        gols_visitante[0]= parent_parent.find('.gols-span').eq(1).html();
-       
-       
-      
-            gols_mandante[1] = gols_mandante[0];
-            gols_visitante[1] = gols_visitante[0];
+
+       gols_mandante[1] = gols_mandante[0];
+       gols_visitante[1] = gols_visitante[0];
 
 
        var regra = /^[0-9]+$/;
@@ -109,20 +113,18 @@ $(function(){
                 
                 if(gols_mandante[1].match(regra) && gols_visitante[1].match(regra)){
                     //verifica se ambos os campos estão preenchidos com resultados numéricos
-                    
-                    anularResultado(id_partida,gols_mandante[0],gols_visitante[0],parent_parent);
-                    console.log("CAMPO CLICADO:"+campo_clicado.html());
-                    if(campo_clicado.html() != '-'){
-                        salvarResultado(id_partida,gols_mandante[1],gols_visitante[1],parent_parent);
+                    if(gols_mandante[0].match(regra) && gols_visitante[0].match(regra)){
+                        anularResultado(id_partida,gols_mandante[0],gols_visitante[0],parent_parent);
+                        console.log("CAMPO CLICADO:"+campo_clicado.html());
                     }
                     
-                    
-                        
+                    if(campo_clicado.html() != '-'){
+                        salvarResultado(id_partida,gols_mandante[1],gols_visitante[1],parent_parent);
+                    }   
   
                 }
                 campo_clicado.show(); 
-           }
-           
+           }   
        });
        
     });
@@ -135,22 +137,27 @@ function salvarResultado(id_partida,gols_mandante,gols_visitante, parent_parent)
     var id_visitante = parseInt(parent_parent.find('.id_visitante').val());
     var id_vencedor;
     var id_perdedor;
-    
+    var gols_vencedor;
+    var gols_perdedor;
     if(gols_mandante === gols_visitante){
-        atualizaClassificacao(id_mandante,1,"empate",0);
-        atualizaClassificacao(id_visitante,1,"empate",0);
+        atualizaClassificacao(id_mandante,1,"empate",gols_mandante,gols_visitante,0);
+        atualizaClassificacao(id_visitante,1,"empate",gols_visitante,gols_mandante,0);
     }
     else{
         if(gols_mandante > gols_visitante){
             id_vencedor = id_mandante;
             id_perdedor = id_visitante;
+            gols_vencedor = gols_mandante;
+            gols_perdedor = gols_visitante;
         }
         else{
             id_vencedor = id_visitante;
             id_perdedor = id_mandante;
+            gols_vencedor = gols_visitante;
+            gols_perdedor = gols_mandante;
         }
-        atualizaClassificacao(id_vencedor,3,"vitoria",0);
-        atualizaClassificacao(id_perdedor,0,"derrota",0);
+        atualizaClassificacao(id_vencedor,3,"vitoria",gols_vencedor,gols_perdedor,0);
+        atualizaClassificacao(id_perdedor,0,"derrota",gols_perdedor,gols_vencedor,0);
     }
     //atualizaResultado(id_partida, id_mandante,id_visitante,gols_mandante,gols_visitante);
 }
@@ -161,26 +168,30 @@ function anularResultado(id_partida,gols_mandante,gols_visitante,parent_parent){
     var id_visitante = parseInt(parent_parent.find('.id_visitante').val());
     var id_vencedor;
     var id_perdedor;
-    console.log("ENTROU EM ANULAR RESULTADO...");
+    var gols_vencedor;
+    var gols_perdedor;
     if(gols_mandante === gols_visitante){
-        atualizaClassificacao(id_mandante,1,"empate",1);
-        atualizaClassificacao(id_visitante,1,"empate",1);
+        atualizaClassificacao(id_mandante,1,"empate",gols_mandante,gols_visitante,1);
+        atualizaClassificacao(id_visitante,1,"empate",gols_visitante,gols_mandante,1);
     }
     else{
         if(gols_mandante > gols_visitante){
             id_vencedor = id_mandante;
             id_perdedor = id_visitante;
+            gols_vencedor = gols_mandante;
+            gols_perdedor = gols_visitante;
         }
         else{
             id_vencedor = id_visitante;
             id_perdedor = id_mandante;
+            gols_vencedor = gols_visitante;
+            gols_perdedor = gols_mandante;
         }
-        atualizaClassificacao(id_vencedor,3,"vitoria",1);
-        atualizaClassificacao(id_perdedor,0,"derrota",1);
+        atualizaClassificacao(id_vencedor,3,"vitoria",gols_vencedor,gols_perdedor,1);
+        atualizaClassificacao(id_perdedor,0,"derrota",gols_perdedor,gols_vencedor,1);
     }
 }
 function salvarPartida(id_partida,gols_mandante,gols_visitante){
-    console.log("Entrou em salvar partida");
     $.ajax({
         url:'http://localhost/copabud/partida/salva_partida/',
         type:'POST',
@@ -190,10 +201,10 @@ function salvarPartida(id_partida,gols_mandante,gols_visitante){
             gols_visitante:gols_visitante
         },
         success:function(){
-            console.log("Partida salva com sucesso...");
+            //console.log("Partida salva com sucesso...");
         },
         error:function(){
-            console.log("Erro ao salvar partida...");
+            //console.log("Erro ao salvar partida...");
         }
     });
 }
@@ -203,14 +214,14 @@ function cancelaPartida(id){
         type:'POST',
         data:{id:id},
         success:function(){
-            console.log("Partida cancelada com sucesso...");
+            //console.log("Partida cancelada com sucesso...");
         },
         error:function(){
-            console.log("Erro ao cancelar partida...");
+            //console.log("Erro ao cancelar partida...");
         }
     });
 }
-function atualizaClassificacao(id_equipe,pontos,tipo_resultado,anula){
+function atualizaClassificacao(id_equipe,pontos,tipo_resultado,gols_pro,gols_contra,anula){
     $.ajax({
         url:'http://localhost/copabud/classificacao/atualiza_classificacao/',
         type:'POST',
@@ -219,10 +230,28 @@ function atualizaClassificacao(id_equipe,pontos,tipo_resultado,anula){
             id_equipe:id_equipe,
             pontos:pontos,
             tipo_resultado:tipo_resultado,
+            gols_pro:gols_pro,
+            gols_contra:gols_contra,
             anula:anula,
         },
-        success:function(){
-          //$("#tabela_classificacao").load('#tabela_classificacao');
+        dataType:'json',
+        success:function(json){
+          var base_url_imagem = 'http://localhost/copabud/assets/images/';
+          for(var i in json){
+              $('#classif-imagem-'+i).attr('src',(base_url_imagem+json[i].imagem));
+              $('#classif-equipe-'+i).html(json[i].equipe);
+              $('#classif-pontos-'+i).html(json[i].pontos);
+              $('#classif-jogos-'+i).html(json[i].jogos);
+              $('#classif-vitorias-'+i).html(json[i].vitorias);
+              $('#classif-empates-'+i).html(json[i].empates);
+              $('#classif-saldo_gols-'+i).html(json[i].saldo_gols);
+              $('#classif-gols_pro-'+i).html(json[i].gols_pro);
+              $('#classif-gols_contra-'+i).html(json[i].gols_contra);
+              
+          }
+        },
+        error:function(){
+           console.log("Classificacao não foi atualizada"); 
         }
  
     });
@@ -316,6 +345,7 @@ function inserirParticipante(){
 function inserirTime(area_participantes){
     $.ajax({
        url:'http://localhost/copabud/edicao/listar_times',
+       type:'POST',
        dataType:'json',
        success:function(json){
            
@@ -342,4 +372,34 @@ function addLabels(area_participantes){
     $(area_participantes).append('<label>Jogador</label>');
     $(area_participantes).append('<label>Time</label>');
     $(area_participantes).append('<br>');
+}
+
+function resetaClassificacao(id_edicao){
+    $.ajax({
+        url:'http://localhost/copabud/classificacao/resetar',
+        type:'POST',
+        data:{id_edicao:id_edicao},
+        success:function(){
+            //location.reload();
+            console.log("Resetou a classificação");
+        },
+        error:function(){
+            console.log("Não Resetou a classificação");
+        }
+    });
+}
+
+function resetaPartidas(id_edicao){
+    $.ajax({
+        url:'http://localhost/copabud/partida/resetar',
+        type:'POST',
+        data:{id_edicao:id_edicao},
+        success:function(){
+            location.reload();
+            console.log("Resetou as partidas");
+        },
+        error:function(){
+            console.log("Não Resetou as partidas");
+        }
+    });
 }

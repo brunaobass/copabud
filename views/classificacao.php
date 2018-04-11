@@ -1,5 +1,6 @@
 <section class="classificacao-jogos">
         <h2>Classificação e Resultados</h2>
+        <button class="btn btn-enviar" id="btn-resetar-classificacao">Resetar</button>
         <ul class="classificacao" id="tabela_classificacao"> 
             <li class="cabecalho cabecalho-classificacao">
                 <div class="nome-time float-left">Equipe</div>
@@ -19,16 +20,18 @@
             ?>
             <li class="item-classificacao">
                 <div class="posicao smallbox float-left"><?=($i+1)?></div>
-                <div class="escudo smallbox float-left"><img src="<?=BASE_URL?>assets/images/<?=$classificacao[$i]['imagem']?>"></div>
-                <div class="nome-time float-left"><?=$classificacao[$i]['equipe']?></div>
-                <div class="pontos smallbox float-left"><?=$classificacao[$i]['pontos']?></div>
-                <div class="jogos-classificacao smallbox float-left"><?=$classificacao[$i]['jogos']?></div>
-                <div class="vitorias smallbox float-left"><?=$classificacao[$i]['vitorias']?></div>
-                <div class="empates smallbox float-left"><?=$classificacao[$i]['empates']?></div>
-                <div class="derrotas smallbox float-left"><?=$classificacao[$i]['derrotas']?></div>
-                <div class="saldo-gols smallbox float-left"><?=$classificacao[$i]['saldo_gols']?></div>
-                <div class="gols-pro smallbox float-left"><?=$classificacao[$i]['gols_pro']?></div>
-                <div class="gols-contra smallbox float-left"><?=$classificacao[$i]['gols_contra']?></div>
+                <div class="escudo smallbox float-left">
+                    <img src="<?=BASE_URL?>assets/images/<?=$classificacao[$i]['imagem']?>" id="classif-imagem-<?=$i?>"     >
+                </div>
+                <div class="nome-time float-left" id="classif-equipe-<?=$i?>"><?=$classificacao[$i]['equipe']?></div>
+                <div class="pontos smallbox float-left" id="classif-pontos-<?=$i?>"><?=$classificacao[$i]['pontos']?></div>
+                <div class="jogos-classificacao smallbox float-left" id="classif-jogos-<?=$i?>"><?=$classificacao[$i]['jogos']?></div>
+                <div class="vitorias smallbox float-left" id="classif-vitorias-<?=$i?>"><?=$classificacao[$i]['vitorias']?></div>
+                <div class="empates smallbox float-left" id="classif-empates-<?=$i?>"><?=$classificacao[$i]['empates']?></div>
+                <div class="derrotas smallbox float-left" id="classif-derrotas-<?=$i?>"><?=$classificacao[$i]['derrotas']?></div>
+                <div class="saldo-gols smallbox float-left" id="classif-saldo_gols-<?=$i?>"><?=$classificacao[$i]['saldo_gols']?></div>
+                <div class="gols-pro smallbox float-left" id="classif-gols_pro-<?=$i?>"><?=$classificacao[$i]['gols_pro']?></div>
+                <div class="gols-contra smallbox float-left" id="classif-gols_contra-<?=$i?>"><?=$classificacao[$i]['gols_contra']?></div>
                 <div class="clear"></div>
             </li>
             <?php
