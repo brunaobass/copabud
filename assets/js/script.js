@@ -222,6 +222,7 @@ function cancelaPartida(id){
     });
 }
 function atualizaClassificacao(id_equipe,pontos,tipo_resultado,gols_pro,gols_contra,anula){
+    console.log('Tipo de resultado:'+tipo_resultado);
     $.ajax({
         url:'http://localhost/copabud/classificacao/atualiza_classificacao/',
         type:'POST',
@@ -243,6 +244,7 @@ function atualizaClassificacao(id_equipe,pontos,tipo_resultado,gols_pro,gols_con
               $('#classif-pontos-'+i).html(json[i].pontos);
               $('#classif-jogos-'+i).html(json[i].jogos);
               $('#classif-vitorias-'+i).html(json[i].vitorias);
+              $('#classif-derrotas-'+i).html(json[i].derrotas);
               $('#classif-empates-'+i).html(json[i].empates);
               $('#classif-saldo_gols-'+i).html(json[i].saldo_gols);
               $('#classif-gols_pro-'+i).html(json[i].gols_pro);

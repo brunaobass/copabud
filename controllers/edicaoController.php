@@ -151,6 +151,7 @@ class edicaoController extends Controller{
         
         /*var_dump($mandantes);
         var_dump($visitantes);
+        var_dump($times);
         exit;*/
         $num_times = $num_partidas*2;
         
@@ -161,9 +162,24 @@ class edicaoController extends Controller{
                 "mandantes"=>$mandantes,
                 "visitantes"=>$visitantes
             );
-            
             $this->inserirPartida($rodada+1,$mandantes,$visitantes,$partidas,$num_partidas);
             $this->reorganiza($num_partidas);
+        }
+        $rodada_returno = 0;
+        for($rodada = $num_times-1;$rodada<($num_times-1)*2;$rodada++){
+            
+            $rodadas[$rodada] = array(
+                "rodada"=>($rodada+1),
+                "mandantes"=> $visitantes,
+                "visitantes"=>$mandantes
+            );
+            
+            
+            $rodada_returno++;
+            $this->inserirPartida($rodada+1,$rodadas[$rodada]['mandantes'],$rodadas[$rodada]['visitantes'],
+                    $partidas,$num_partidas);
+            $this->reorganiza($num_partidas);
+            
         }
 
         $dados["rodadas"] = $rodadas;
@@ -192,11 +208,12 @@ class edicaoController extends Controller{
                 }   
             }  
     }
-    private function inserirPartida($rodada,$mandantes,$visitantes,$partidas,$num_partidas){
+    private function inserirPartida($rodada,$mandantes,$visitantes,$partidas,$limite){
         $edicoes = new Edicoes();
         $id_edicao = $edicoes->getUltimaEdicao();
-        for($i=0;$i<$num_partidas;$i++){
-            $partidas->inserePartida($id_edicao,$rodada, $mandantes[$i], $visitantes[$i]);
+        
+        for($i=0;$i<$limite;$i++){
+            $partidas->inserePartida($id_edicao,$rodada, $mandantes[$i], $visitantes[$i]);  
         }
     }
 }

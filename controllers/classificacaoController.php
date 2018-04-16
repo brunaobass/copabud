@@ -12,17 +12,18 @@ class classificacaoController extends Controller{
         
         $dados['titulo_pagina'] = 'Classificação e Jogos';
         $dados['css'] = 'classificacao';
-        $dados['titulo_h1'] = 'Classificaçãoe Jogos';
+        $dados['titulo_h1'] = 'Classificação e Jogos';
         
         $classif = new Classificacao();
         $partidas = new Partidas();
-        if(!isset($_POST['id_edicao'])){
-            $edicoes = new Edicoes();
+        $edicoes = new Edicoes();
+        if(!isset($_POST['edicao'])){
             $id_edicao = $edicoes->getUltimaEdicao();
         }
         else{
-            $id_edicao = filter_input(INPUT_POST, 'id_edicao',FILTER_VALIDATE_INT);
+            $id_edicao = filter_input(INPUT_POST, 'edicao',FILTER_VALIDATE_INT);
         }
+        $dados['edicoes'] = $edicoes->listaEdicoes();
         $dados['classificacao'] = $classif->getClassificao($id_edicao);
         
         $lista_partidas = $partidas->getPartidas($id_edicao);
@@ -49,28 +50,7 @@ class classificacaoController extends Controller{
         $partidas = new Partidas();
         echo $partidas->verificaPartidaRealizada($id);
     }
-    
-    public function atualiza_empate(){
-        if(isset($_POST)){
-            $id_mandante = filter_input(INPUT_POST, 'id_mandante',FILTER_VALIDATE_INT);
-            $id_visitante = filter_input(INPUT_POST, 'id_visitante',FILTER_VALIDATE_INT);
-        }
-        
-        $classificacao = new Classificacao();
-        $classificacao->atualizaResultado($id_edicao,$id_mandante,"empates");
-        $classificacao->atualizaResultado($id_edicao,$id_visitante,"empates");
-    }
-    public function atualiza_vitoria(){
-        if(isset($_POST)){
-            $id_vencedor = filter_input(INPUT_POST, 'id_vencedor',FILTER_VALIDATE_INT);
-            $id_perdedor = filter_input(INPUT_POST, 'id_perdedor',FILTER_VALIDATE_INT);
-        }
-        
-        $classificacao = new Classificacao();
-        $classificacao->atualizaResultado($id_edicao,$id_vencedor,"vitorias");
-        $classificacao->atualizaResultado($id_edicao,$id_perdedor,"derrotas");
-    }
-    
+
     public function atualiza_classificacao(){
         if(isset($_POST)){
             $id_edicao = filter_input(INPUT_POST, 'id_edicao',FILTER_VALIDATE_INT);
@@ -81,7 +61,7 @@ class classificacaoController extends Controller{
             $gols_contra =  filter_input(INPUT_POST, 'gols_contra',FILTER_VALIDATE_INT);
             $anula = $_POST['anula']; 
         }
-        
+
         $classificacao = new Classificacao();
         $classificacao->atualizaClassificacao($id_edicao,$id_equipe,$pontos,$tipo_resultado.'s',$gols_pro,$gols_contra,$anula);
         

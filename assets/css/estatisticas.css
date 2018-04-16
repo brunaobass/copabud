@@ -1,0 +1,48 @@
+.estatisticas{
+    margin:60px auto;
+    
+}
+.container_dados{
+    width: 273px;
+    color: #fff;
+    display: block;
+    float: left;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-top: 40px;
+}
+.titulo-dados,
+.container_dados{
+
+    vertical-align: middle;
+    text-align: center;
+}
+
+.titulo-dados{
+    font-size: 22px;
+    background-color: #5E4522;
+    height: 86px;
+    line-height: 86px;
+}
+.valor_dados{
+    background-color: #9D6417;
+    height: 175px;
+    line-height: 175px;
+    border: 1px solid blue;
+}
+.container_dados img{
+    width: 80px;
+    height: 80px;
+}
+.container_dados span{
+    display: block;
+}
+.fonte-grande{
+    font-size: 50px;
+}
+.fonte-media{
+    font-size: 30px;
+}
+.fonte-pequena{
+    font-size: 26px;
+}

@@ -1,6 +1,19 @@
 <section class="classificacao-jogos">
         <h2>Classificação e Resultados</h2>
-        <button class="btn btn-enviar" id="btn-resetar-classificacao">Resetar</button>
+        <h3 class="titulo-edicao">Escolha a edição:</h3>
+        <!--<button class="btn btn-enviar" id="btn-resetar-classificacao">Resetar</button>-->
+        <form method="POST" id="form-edicoes">
+            <select name="edicao">
+                <?php
+                    foreach ($edicoes as $edicao):
+                ?>
+                    <option value="<?=$edicao['id']?>"><?=$edicao['edicao']?></option>
+                <?php
+                    endforeach;
+                ?>
+            </select>
+            <button type="submit" class="btn btn-edicao">Enviar</button>
+        </form>
         <ul class="classificacao" id="tabela_classificacao"> 
             <li class="cabecalho cabecalho-classificacao">
                 <div class="nome-time float-left">Equipe</div>

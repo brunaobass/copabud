@@ -4,6 +4,36 @@
 */
 
 /****CLASSIFICAÇÃO E JOGOS****/
+#form-edicoes{
+    display: block;
+    margin-bottom: 30px;
+}
+#form-edicoes select{
+    width: 200px;
+    border: 2px solid #080808;
+    border-radius: 5px;
+    display: block;
+    float: left;
+    line-height: 40px;
+    height: 40px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 30px;
+}
+.titulo-edicao{
+    font-weight: bold;
+    margin-bottom: 10px;
+    
+}
+.btn-edicao{
+    width: 100px;
+    background-color: #5E4522;
+    font-weight: bold;
+    color: #fff;
+}
+.btn-edicao:hover{
+    background-color: #985f0d;
+}
 .escudo img{
     max-width: 26px;
     max-height: 26px;

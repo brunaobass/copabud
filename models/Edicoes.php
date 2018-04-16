@@ -45,6 +45,29 @@ class Edicoes extends Model{
             $resultado = $sql->fetch();
             return $resultado['id_edicao'];
         }
-       
+    }
+    
+    public function listaEdicoes(){
+        $array = array();
+        $sql = "SELECT * FROM edicao";
+        $sql = $this->db->query($sql);
+        
+        if($sql->rowCount() > 0){
+           $array = $sql->fetchAll(); 
+        }
+        
+        return $array;        
+    }
+    
+    public function getEdicao($id){
+        $sql = "SELECT * FROM edicao WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id",$id);
+        $sql->execute();
+        
+        if($sql->rowCount() > 0){
+            return $sql->fetch(); 
+        }
     }
 }
