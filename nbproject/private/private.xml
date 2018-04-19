@@ -6,13 +6,10 @@
             <file>file:/C:/wamp64/www/copabud/controllers/estatisticasController.php</file>
             <file>file:/C:/wamp64/www/copabud/controllers/edicaoController.php</file>
             <file>file:/C:/wamp64/www/copabud/models/Classificacao.php</file>
-            <file>file:/C:/wamp64/www/copabud/views/estatisticas.php</file>
-            <file>file:/C:/wamp64/www/copabud/controllers/sobreController.php</file>
-            <file>file:/C:/wamp64/www/copabud/assets/css/estatisticas.css</file>
-            <file>file:/C:/wamp64/www/copabud/controllers/homeController.php</file>
             <file>file:/C:/wamp64/www/copabud/controllers/classificacaoController.php</file>
-            <file>file:/C:/wamp64/www/copabud/assets/js/script.js</file>
+            <file>file:/C:/wamp64/www/copabud/models/Edicoes.php</file>
             <file>file:/C:/wamp64/www/copabud/views/classificacao.php</file>
+            <file>file:/C:/wamp64/www/copabud/models/Partidas.php</file>
         </group>
     </open-files>
 </project-private>

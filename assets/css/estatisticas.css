@@ -1,20 +1,44 @@
+#form-edicoes{
+    display: block;
+
+}
+#form-edicoes select{
+    width: 272px;
+    border: 2px solid #080808;
+    border-radius: 5px;
+    display: block;
+    float: left;
+    line-height: 40px;
+    height: 40px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 7px;
+}
+.btn-edicao{
+    width: 100px;
+    background-color: #5E4522;
+    font-weight: bold;
+    color: #fff;
+}
+.btn-edicao:hover{
+    background-color: #985f0d;
+}
 .estatisticas{
-    margin:60px auto;
-    
+    margin:60px auto; 
+    width: 100%;
 }
 .container_dados{
-    width: 273px;
+    width: 266px;
     color: #fff;
     display: block;
     float: left;
     font-weight: bold;
-    margin-left: 10px;
+    margin-right: 7px;
     margin-top: 40px;
 }
+
 .titulo-dados,
 .container_dados{
-
-    vertical-align: middle;
     text-align: center;
 }
 
@@ -26,13 +50,19 @@
 }
 .valor_dados{
     background-color: #9D6417;
-    height: 175px;
-    line-height: 175px;
-    border: 1px solid blue;
+    height: 176px;
+    display: table;
+    width: 100%;
+}
+.container_valor_dados{
+    display: table-cell;
+    vertical-align: middle;
+    
 }
 .container_dados img{
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
 }
 .container_dados span{
     display: block;
@@ -41,8 +71,11 @@
     font-size: 50px;
 }
 .fonte-media{
-    font-size: 30px;
+    font-size: 26px;
 }
 .fonte-pequena{
-    font-size: 26px;
+    font-size: 18px;
+}
+#valor-media{
+    margin-bottom: 10px;
 }

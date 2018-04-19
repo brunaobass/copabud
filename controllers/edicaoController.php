@@ -216,5 +216,9 @@ class edicaoController extends Controller{
             $partidas->inserePartida($id_edicao,$rodada, $mandantes[$i], $visitantes[$i]);  
         }
     }
+    
+    public function gerar_playoffs($id_edicao){
+        
+    }
 }
 

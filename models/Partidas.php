@@ -13,14 +13,14 @@
  */
 class Partidas extends Model {
     //put your code here
-    public function inserePartida($id_edicao,$rodada,$mandante,$visitante){
-        $sql = "INSERT INTO partidas (id_edicao,rodada,id_mandante,id_visitante) VALUES (?,?,?,?)";
-        echo '<br>ID MANDANTE:'.$mandante;
-        echo '<br>ID VISITANTE:'.$visitante;
+    public function inserePartida($id_edicao,$rodada,$mandante,$visitante,$fase){
+        $sql = "INSERT INTO partidas (id_edicao,rodada,id_mandante,id_visitante,partida_jogada,fase) VALUES (?,?,?,?,?,?)";
+        
         $sql = $this->db->prepare($sql);
-        $sql->execute(array($id_edicao,$rodada,$mandante,$visitante));
+        $sql->execute(array($id_edicao,$rodada,$mandante,$visitante,0,$fase));
     }
     public function atualizaPartida($id,$gols_mandante,$gols_visitante){
+        
         $sql = "UPDATE partidas SET gols_mandante = :gols_mandante, gols_visitante = :gols_visitante, partida_jogada = 1"
                 . " WHERE id = :id";
         $sql = $this->db->prepare($sql);
@@ -51,6 +51,23 @@ class Partidas extends Model {
             $partidas = $sql->fetchAll();
         }
         
+        return $partidas;
+    }
+    public function getPlayoffs($id_edicao,$fase){
+        $partidas = array();
+        $sql = "SELECT * FROM partidas WHERE id_edicao = :id_edicao AND fase = :fase";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->bindValue(":fase",$fase);
+        $sql->execute();
+        
+        if($sql->rowCount()>0){
+            $partidas = $sql->fetchAll();
+        }
+        var_dump($partidas);
+        echo '<br>ENTROU NO MÉTODO<BR>';
+        exit;
         return $partidas;
     }
     
@@ -102,5 +119,34 @@ class Partidas extends Model {
         $sql->bindValue(":id_edicao",$id_edicao);
         $sql->execute();
     }
-
+    
+    public function verificaFimFase($id_edicao,$fase){
+        
+        $sql = "SELECT partida_jogada FROM partidas WHERE id_edicao = :id_edicao AND partida_jogada = 0  AND fase"
+                . " = :fase";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->bindValue(":fase",$fase);
+        $sql->execute();
+        if($sql->rowCount() == 0){
+            return true;
+        }
+        
+        return false;
+    }
+    public function verificaPlayoff($id_edicao,$fase){
+        //verifica se o playoff foi cadastrado, buscando no banco de dados, o valor da fase e comparando com o valor fornecido 
+        $sql = "SELECT partida_jogada FROM partidas WHERE id_edicao = :id_edicao AND fase = :fase";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->bindValue(":fase",$fase);
+        $sql->execute();
+        if($sql->rowCount() > 0){
+            return true;
+        }
+        
+        return false;
+    } 
 }

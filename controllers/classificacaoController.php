@@ -1,5 +1,6 @@
 <?php
-
+define('SEMIFINAL', 1);
+define('DECISAO', 2);
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,6 +9,7 @@
 class classificacaoController extends Controller{
     
     public function index(){
+        
         $dados = array();
         
         $dados['titulo_pagina'] = 'Classificação e Jogos';
@@ -19,12 +21,23 @@ class classificacaoController extends Controller{
         $edicoes = new Edicoes();
         if(!isset($_POST['edicao'])){
             $id_edicao = $edicoes->getUltimaEdicao();
+            echo 'Edicao:'.$id_edicao;
         }
         else{
             $id_edicao = filter_input(INPUT_POST, 'edicao',FILTER_VALIDATE_INT);
         }
         $dados['edicoes'] = $edicoes->listaEdicoes();
-        $dados['classificacao'] = $classif->getClassificao($id_edicao);
+        $dados['classificacao'] = $classif->getClassificacao($id_edicao);
+        if($partidas->verificaFimFase1($id_edicao,0)){
+            $fase = 1;
+            
+            $this->verificaFase($id_edicao, $fase);
+               
+           
+           
+           $dados['playoffs'] = $partidas->getPlayoffs($id_edicao, $playoffs);
+           var_dump($dados['playoffs']);
+        }
         
         $lista_partidas = $partidas->getPartidas($id_edicao);
         
@@ -79,5 +92,80 @@ class classificacaoController extends Controller{
         $classificacao = new Classificacao();
         $classificacao->resetaClassificacao($id_edicao);
     }
+    
+    private function getFinalistas($classificacao){
+        
+        $finalistas = array();
+        
+        if(count($classificacao)>=6){
+            $num_equipes = 4;
+        }
+        else {
+            $num_equipes = 2;
+        }
+        for($i=0;$i<$num_equipes;$i++){
+            $finalistas[$i]['id'] = $classificacao[$i]['id_player'];
+            $finalistas[$i]['equipe'] = $classificacao[$i]['equipe'];
+            $finalistas[$i]['imagem'] = $classificacao[$i]['imagem'];
+            $finalistas[$i]['sigla'] = $classificacao[$i]['sigla'];
+        }
+        
+        
+        return $finalistas;
+    }
+    
+    private function geraPlayoffs($finalistas,$num_equipes,$id_edicao){
+        
+        $mandantes = array();
+        $visitantes = array();
+        $partidas = new Partidas();
+        $fase;
+        if($num_equipes == 4){
+            $mandantes[0] = $finalistas[0];
+            $mandantes[1] = $finalistas[2];
+            $visitantes[0] = $finalistas[3];
+            $visitantes[1] = $finalistas[1];
+            $fase = 1;//fase 1 indica que as partidas são referentes à semi final
+            
+            $partidas->inserePartida($id_edicao, null, $mandantes[0]['id'], $visitantes[0]['id'],$fase);
+            $partidas->inserePartida($id_edicao, null, $mandantes[1]['id'], $visitantes[1]['id'],$fase);
+            $partidas->inserePartida($id_edicao, null, $visitantes[0]['id'], $mandantes[0]['id'],$fase);
+            $partidas->inserePartida($id_edicao, null, $visitantes[1]['id'], $mandantes[1]['id'],$fase);
+        }
+        else{
+            $mandantes[0] = $finalistas[0];
+            $visitantes[0] = $finalistas[1];
+            $fase = 2;//fase 1 indica que as partidas são referentes à final
+           
+            $partidas->inserePartida($id_edicao, null, $mandantes[0]['id'], $visitantes[0]['id'],$fase);
+            $partidas->inserePartida($id_edicao, null, $visitantes[0]['id'], $mandantes[0]['id'],$fase);
+            
+            
+        }
+        $playoffs = $partidas->getPlayoffs($id_edicao, $fase);
+    }
+    
+    private function verificaFase($id_edicao,$fase){
+        $partidas = new Partidas();
+        if($partidas->verificaPlayoff($id_edicao,$fase) || $fase!=3){
+                if($partidas->verificaFimFase($id_edicao, $fase)){
+                    $this->verificaFase($id_edicao, $fase+1);
+                }
+            }
+            else{
+              $finalistas = $this->getFinalistas($dados['classificacao']); 
+              $dados['finalistas'] = $finalistas; 
+              geraPlayoffs($finalistas,count($finalistas),$id_edicao);  
+            }
+    }
 }
 
+/*if($partidas->verificaPlayoffs($id_edicao,SEMIFINAL)){
+    $finalistas = $this->getFinalistas($dados['classificacao']); 
+    $dados['finalistas'] = $finalistas; 
+    geraPlayoffs($finalistas,count($finalistas),$id_edicao);
+ }else if($partidas->verificaPlayoffs($id_edicao, DECISAO)){
+    $finalistas = $this->getFinalistas($dados['classificacao']); 
+    $dados['finalistas'] = $finalistas; 
+    geraPlayoffs($finalistas,count($finalistas),$id_edicao);
+ }*/

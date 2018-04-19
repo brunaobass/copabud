@@ -29,7 +29,7 @@
             </li>
            
             <?php
-                for ($i = 0; $i < count($classificacao);$i++) :
+                for ($i = 0; $i < count($classificacao);$i++) :                   
             ?>
             <li class="item-classificacao">
                 <div class="posicao smallbox float-left"><?=($i+1)?></div>
@@ -98,8 +98,7 @@
                             <span class="gols-span float-right" ><?=$gols_visitante?></span>
                             <input type="text"class="gols-input float-right">
                             <input type="hidden" class="id_visitante" value="<?=$partidas[$j]['visitante']['id']?>">
-                        </div>
-                        
+                        </div>          
                         
                     </div>
                     
@@ -116,6 +115,51 @@
             </div>
             <?php
                 endfor;
+                
+                if(isset($playoffs)):
             ?>
+            <div id="playoffs">
+                
+                <h3 class="cabecalho cabecalho-jogos">Final</h3>
+                <?php
+                    echo '<br>TOTAL PARTIDAS FINAIS:'.count($playoffs);
+                    for($i=0;$i<count($playoffs);$i++):
+                ?>
+                <div class="partida">
+                    <p class="data-jogo">10/10/2020 | 15:00</p>
+                    <figure class="mandante float-left">
+                        <figcaption class="float-right"><?=$finalistas[0]['sigla']?></figcaption>
+                        <img class="float-right" src="<?=BASE_URL?>assets/images/<?=$finalistas[0]['imagem']?>">    
+                    </figure>
+                    <div class="resultado float-left">
+                        <div>
+                            <span class="gols-span float-left"><?=$gols_mandante?></span>
+                            <input type="text"class="gols-input float-left">
+                            <input type="hidden" class="id_mandante" value="<?=$finalistas[0]['id']?>">
+                        </div>
+                        
+                        <span class="float-left">X</span>
+                        
+                        <div>
+                            <span class="gols-span float-right" ><?=$gols_visitante?></span>
+                            <input type="text"class="gols-input float-right">
+                            <input type="hidden" class="id_visitante" value="<?=$finalistas[0]['id']?>">
+                        </div>
+                        
+                        
+                    </div><!--resultado-left-->
+                    
+                    <figure class="visitante float-right">
+                        <figcaption class="float-left"><?=$finalistas[1]['sigla']?></figcaption>
+                        <img class="float-left" src="<?=BASE_URL?>assets/images/<?=$finalistas[1]['imagem']?>"> 
+                    </figure>
+                    <div class="clear"></div>
+                    <div class="partida-rodape"></div>
+                </div><!--partida-->
+            <?php
+                    endfor;
+                endif;
+            ?>
+            </div>
         </article>
     </section>

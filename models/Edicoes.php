@@ -70,4 +70,6 @@ class Edicoes extends Model{
             return $sql->fetch(); 
         }
     }
+    
+
 }
