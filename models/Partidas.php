@@ -13,11 +13,21 @@
  */
 class Partidas extends Model {
     //put your code here
+    protected function where($campo, $condicao, $valores,$tabela = null) {
+        $resultado = parent::where($campo, $condicao, $valores, "partidas");
+        return $resultado;
+    }
     public function inserePartida($id_edicao,$rodada,$mandante,$visitante,$fase){
         $sql = "INSERT INTO partidas (id_edicao,rodada,id_mandante,id_visitante,partida_jogada,fase) VALUES (?,?,?,?,?,?)";
         
         $sql = $this->db->prepare($sql);
         $sql->execute(array($id_edicao,$rodada,$mandante,$visitante,0,$fase));
+    }
+    public function criaPlayoff($id_edicao,$fase,$id_playoffs){
+        $sql = "INSERT INTO partidas (id_edicao,fase,id_playoffs) VALUES (?,?,?)";
+        
+        $sql = $this->db->prepare($sql);
+        $sql->execute(array($id_edicao,$fase,$id_playoffs));
     }
     public function atualizaPartida($id,$gols_mandante,$gols_visitante){
         
@@ -39,22 +49,67 @@ class Partidas extends Model {
         
         $sql->execute();
     }
-    public function getPartidas($id_edicao){
-        $partidas = array();
-        $sql = "SELECT * FROM partidas WHERE id_edicao = :id_edicao";
-        $sql = $this->db->prepare($sql);
-        
-        $sql->bindValue(":id_edicao",$id_edicao);
-        $sql->execute();
-        
-        if($sql->rowCount()>0){
-            $partidas = $sql->fetchAll();
-        }
+    public function getPartidas($id_edicao,$fase){
+        $partidas = $this->where(
+            array("*"), 
+            array("id_edicao","fase"), 
+            array($id_edicao,$fase)
+        );
         
         return $partidas;
     }
-    
-    
+    public function getPartida($id){
+        $partida = $this->where(
+            array("*"), 
+            array("id"), 
+            array($id)
+        );
+        
+        return $partida[0];
+    }
+    public function getUltimaPartida(){
+        
+        $partida = array();
+        $sql = 'SELECT * FROM partidas ORDER BY id DESC LIMIT 1';
+        
+        $sql = $this->db->query($sql);
+        
+        if($sql->rowCount()>0){
+            $partida = $sql->fetch();
+        }
+        
+        return $partida;
+        
+    }
+
+    public function getPlayoffs($id_edicao,$fase){
+        
+        $playoffs = array();
+        $sql = "SELECT * FROM partidas WHERE id_edicao = :id_edicao AND fase > :fase";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->bindValue(":fase",$fase);
+        $sql->execute();
+        
+        if($sql->rowCount()>0){
+            $playoffs = $sql->fetchAll();
+        }
+   
+        return $playoffs;
+    }
+    public function getIDPlayoff($id){
+        $resultado = $this->where(
+            array("id_playoffs"), 
+            array("id"), 
+            array($id)
+        );
+        
+        
+        
+        return $resultado[0]['id_playoffs'];
+    }
+
     public function getTotalRodadas($id_edicao){
         $sql = "SELECT MAX(rodada) as num_rodadas FROM partidas WHERE id_edicao = :id_edicao";
         $sql = $this->db->prepare($sql);
@@ -119,5 +174,73 @@ class Partidas extends Model {
         
         return false;
     }
+    public function verificaPlayoff($id_edicao,$fase){
+        //verifica se o playoff foi cadastrado, buscando no banco de dados, o valor da fase e comparando com o valor fornecido 
+        $sql = "SELECT partida_jogada FROM partidas WHERE id_edicao = :id_edicao AND fase = :fase";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_edicao",$id_edicao);
+        $sql->bindValue(":fase",$fase);
+        $sql->execute();
+        if($sql->rowCount() > 0){
+            return true;
+        }
+        
+        return false;
+    } 
     
+    public function relacionaPartidaPlayoff($id){
+        //relaciona o id do playoff às partidas de cada fase
+        $id_playoffs = Playoffs::inserePlayoff();
+        
+        
+        $sql = "UPDATE partidas SET id_playoffs = :id_playoffs WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id_playoffs",$id_playoffs);
+        $sql->bindValue(":id",$id);
+        
+        $sql->execute();
+    }
+    
+    public function atualizaPlayoffs($id_partida,$mandante,$visitante,$ida_volta){
+        $sql = "UPDATE partidas SET id_mandante = :mandante, id_visitante = :visitante, ida_volta = :ida_volta"
+                . " WHERE id = :id_partida";
+        
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(":mandante",$mandante);
+        $sql->bindValue(":visitante",$visitante);
+        $sql->bindValue(":ida_volta",$ida_volta);
+        $sql->bindValue(":id_partida",$id_partida);
+        
+        $sql->execute();
+    }
+    
+    public function getFase($id){
+        $sql = "SELECT fase FROM partidas WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id",$id);
+        
+        $sql->execute();
+        if($sql->rowCount() > 0){
+            $resultado = $sql->fetch();
+        }
+        
+        return $resultado['fase'];
+    }
+    
+    public function getIdaVolta($id){
+        $sql = "SELECT ida_volta FROM partidas WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id",$id);
+        
+        $sql->execute();
+        if($sql->rowCount() > 0){
+            $resultado = $sql->fetch();
+        }
+        
+        return $resultado['ida_volta'];
+    }
 }

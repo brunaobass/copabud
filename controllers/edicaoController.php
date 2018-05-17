@@ -121,13 +121,19 @@ class edicaoController extends Controller{
             $participantes = $_POST['participante'];
             $times = $_POST['time'];
             $edicao = filter_input(INPUT_POST, 'edicao',FILTER_SANITIZE_STRING);
+            $num_classificados = filter_input(INPUT_POST, 'classificados',FILTER_VALIDATE_INT);
             
             $copia_participantes = array_unique($participantes);
             $copia_times = array_unique($times);
             
             if((count($copia_participantes)!= count($participantes))|| (count($copia_times)!= count($times))){
-                $dados['erro'] = "Não é permitido equipes ou participantes repetidos...";
-                $this->loadTemplate("tabela",$dados);
+                $_SESSION['erro'] = "Não é permitido equipes ou participantes repetidos...";
+                header("Location: ".BASE_URL."edicao/criar");
+                exit;
+            }
+            if($num_classificados > count($participantes)){
+                $_SESSION['erro'] = "O número de classificados deve ser menor ou igual ao número de participantes...";
+                header("Location: ".BASE_URL."edicao/criar");
                 exit;
             }
             $id_edicao = $this->cria_edicao($edicao);
@@ -148,11 +154,7 @@ class edicaoController extends Controller{
             $mandantes[$i] = $times[$i]; 
             $visitantes[$i] = $times[$i+$num_partidas];
         }
-        
-        /*var_dump($mandantes);
-        var_dump($visitantes);
-        var_dump($times);
-        exit;*/
+
         $num_times = $num_partidas*2;
         
         $partidas = new Partidas();
@@ -181,13 +183,46 @@ class edicaoController extends Controller{
             $this->reorganiza($num_partidas);
             
         }
-
+        $this->gera_playoffs($id_edicao,$num_classificados);
         $dados["rodadas"] = $rodadas;
         $dados["num_partidas"] = $num_partidas;
         
         $this->loadTemplate("tabela",$dados);
     }
-    
+    private function gera_playoffs($id_edicao,$num_classificados){
+        $partidas = new Partidas();
+        $playoffs = new Playoffs();
+        $num_confrontos = $num_classificados/2;
+        echo '<br>Gerou Playoff! Número de classificados: '.$num_classificados.'<br>';
+        echo 'Número de confrontos na fase: '.$num_confrontos.'<br>';
+        if($num_classificados>=2){
+            $num_fases_playoff = $this->getNumPlayoffs($num_classificados);
+            $ids_playoffs = array();
+            for($i=0;$i<$num_confrontos;$i++){
+                //partidas de ida
+                $ids_playoffs[$i] = $playoffs->inserePlayoff();
+                $partidas->criaPlayoff($id_edicao, $num_fases_playoff,$ids_playoffs[$i]);
+            }
+            
+            foreach ($ids_playoffs as $id_playoffs){
+                $partidas->criaPlayoff($id_edicao, $num_fases_playoff,$id_playoffs);
+            }
+                                    
+
+            $this->gera_playoffs($id_edicao, $num_confrontos);
+        }
+        
+    }
+    private function  getNumPlayoffs($num_equipes){
+        $num_fases = 0;
+        while ($num_equipes>=2){
+            $num_equipes = $num_equipes/2;
+            $num_fases++;
+        }
+        
+        return $num_fases;
+    }
+
     private function reorganiza($num_partidas){
         global $mandantes;
         global $visitantes;
@@ -213,12 +248,9 @@ class edicaoController extends Controller{
         $id_edicao = $edicoes->getUltimaEdicao();
         
         for($i=0;$i<$limite;$i++){
-            $partidas->inserePartida($id_edicao,$rodada, $mandantes[$i], $visitantes[$i]);  
+            $partidas->inserePartida($id_edicao,$rodada, $mandantes[$i], $visitantes[$i],0);  
         }
     }
     
-    public function gerar_playoffs($id_edicao){
-        
-    }
 }
 

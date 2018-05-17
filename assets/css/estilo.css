@@ -27,6 +27,11 @@ img{
     max-width: 100%;
     height: auto;
 }
+label{
+    display: block;
+    font-size: 15px;
+    margin-bottom: 7px;
+}
 .clear{
     clear: both;
 }
@@ -54,6 +59,7 @@ input{
     font-size: 18px;
     border: 2px solid #ccc;
     padding-left: 15px;
+    margin-bottom: 10px;
 }
 input[type="file"]{
     border: none;

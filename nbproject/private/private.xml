@@ -3,12 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp64/www/copabud/controllers/estatisticasController.php</file>
-            <file>file:/C:/wamp64/www/copabud/controllers/edicaoController.php</file>
-            <file>file:/C:/wamp64/www/copabud/models/Classificacao.php</file>
+            <file>file:/C:/wamp64/www/copabud/controllers/PlayoffController.php</file>
+            <file>file:/C:/wamp64/www/copabud/models/Playoffs.php</file>
+            <file>file:/C:/wamp64/www/copabud/views/jogo.php</file>
+            <file>file:/C:/wamp64/www/copabud/controllers/partidaController.php</file>
             <file>file:/C:/wamp64/www/copabud/controllers/classificacaoController.php</file>
-            <file>file:/C:/wamp64/www/copabud/models/Edicoes.php</file>
-            <file>file:/C:/wamp64/www/copabud/views/classificacao.php</file>
+            <file>file:/C:/wamp64/www/copabud/assets/js/script.js</file>
+            <file>file:/C:/wamp64/www/copabud/assets/css/classificacao.css</file>
             <file>file:/C:/wamp64/www/copabud/models/Partidas.php</file>
         </group>
     </open-files>

@@ -1,9 +1,20 @@
 <section class="criar">
     <button id="btn-addparticipante" class="btn btn-enviar">Adicionar Participante</button>
+    <?php
+        if(isset($_SESSION['erro']) && !empty($_SESSION['erro'])){
+            echo '<p class="erro">'.$_SESSION['erro'].'</p>';
+            unset($_SESSION['erro']);
+        }
+    ?>
     <form method="POST" action="<?=BASE_URL?>edicao/gerar_tabela">
         <fieldset class="area_edicao">
-            <label>Edição</label>
+            <label for="edicao">Edição</label>
             <input type="text" name="edicao">
+            
+        </fieldset>
+        <fieldset class="area_edicao">
+            <label for="classificados">Número de classificados para a próxima fase</label>
+            <input type="text" name="classificados" pattern="[0-9]+$" required title="Digite somente valores numéricos">
             
         </fieldset>
         <fieldset class="area_participantes"></fieldset>

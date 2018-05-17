@@ -14,6 +14,7 @@
 class Classificacao extends Model{
     
     public function getClassificacao($id_edicao){
+        
         $classificao = array();
         $sql = "SELECT pe.*,(pe.gols_pro - pe.gols_contra) AS saldo_gols,e.nome as equipe,e.imagem as imagem, "
                 . "e.sigla as sigla FROM players_edicao pe INNER JOIN equipes e ON pe.id_equipe = e.id "

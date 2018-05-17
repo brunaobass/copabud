@@ -70,6 +70,18 @@ class Edicoes extends Model{
             return $sql->fetch(); 
         }
     }
-    
+    public function getNumClassificados($id){
+        
+        $sql = "SELECT num_classificados FROM edicao WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        
+        $sql->bindValue(":id",$id);
+        $sql->execute();
+        
+        if($sql->rowCount() > 0){
+            $resultado = $sql->fetch();
+            return $resultado['num_classificados']; 
+        }
+    }
 
 }

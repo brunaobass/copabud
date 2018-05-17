@@ -86,9 +86,10 @@
                     <div class="resultado float-left">
                         <input type="hidden" class="id_partida" value="<?=$partidas[$j]['id']?>">
                         <input type="hidden" class="partida_jogada" value="<?=$partidas[$j]['partida_jogada']?>">
+                        <input type="hidden" class="fase" value="<?=$partidas[$j]['fase']?>">
                         <div>
                             <span class="gols-span float-left"><?=$gols_mandante?></span>
-                            <input type="text"class="gols-input float-left">
+                            <input type="text" class="gols-input float-left">
                             <input type="hidden" class="id_mandante" value="<?=$partidas[$j]['mandante']['id']?>">
                         </div>
                         
@@ -96,7 +97,7 @@
                         
                         <div>
                             <span class="gols-span float-right" ><?=$gols_visitante?></span>
-                            <input type="text"class="gols-input float-right">
+                            <input type="text" class="gols-input float-right">
                             <input type="hidden" class="id_visitante" value="<?=$partidas[$j]['visitante']['id']?>">
                         </div>          
                         
@@ -116,50 +117,54 @@
             <?php
                 endfor;
                 
-                if(isset($playoffs)):
             ?>
             <div id="playoffs">
                 
-                <h3 class="cabecalho cabecalho-jogos">Final</h3>
+                <h3 class="cabecalho cabecalho-jogos">Playoffs</h3>
                 <?php
-                    echo '<br>TOTAL PARTIDAS FINAIS:'.count($playoffs);
-                    for($i=0;$i<count($playoffs);$i++):
-                ?>
-                <div class="partida">
-                    <p class="data-jogo">10/10/2020 | 15:00</p>
-                    <figure class="mandante float-left">
-                        <figcaption class="float-right"><?=$finalistas[0]['sigla']?></figcaption>
-                        <img class="float-right" src="<?=BASE_URL?>assets/images/<?=$finalistas[0]['imagem']?>">    
-                    </figure>
-                    <div class="resultado float-left">
-                        <div>
-                            <span class="gols-span float-left"><?=$gols_mandante?></span>
-                            <input type="text"class="gols-input float-left">
-                            <input type="hidden" class="id_mandante" value="<?=$finalistas[0]['id']?>">
-                        </div>
-                        
-                        <span class="float-left">X</span>
-                        
-                        <div>
-                            <span class="gols-span float-right" ><?=$gols_visitante?></span>
-                            <input type="text"class="gols-input float-right">
-                            <input type="hidden" class="id_visitante" value="<?=$finalistas[0]['id']?>">
-                        </div>
-                        
-                        
-                    </div><!--resultado-left-->
+                
                     
-                    <figure class="visitante float-right">
-                        <figcaption class="float-left"><?=$finalistas[1]['sigla']?></figcaption>
-                        <img class="float-left" src="<?=BASE_URL?>assets/images/<?=$finalistas[1]['imagem']?>"> 
-                    </figure>
-                    <div class="clear"></div>
-                    <div class="partida-rodape"></div>
-                </div><!--partida-->
-            <?php
-                    endfor;
-                endif;
-            ?>
+                if(isset($semifinal)):?>
+                    <h3 class="cabecalho cabecalho-jogos">Semifinal</h3>
+                <?php
+                    foreach ($semifinal as $jogo):  
+                        if($jogo['partida_jogada']==0){
+                            $gols_mandante = '-';
+                            $gols_visitante = '-';
+                        }
+                        else{
+                            $gols_mandante = $jogo['gols_mandante'];
+                            $gols_visitante = $jogo['gols_visitante'];
+                        }
+                        require 'jogo.php';
+                ?>
+                
+                <?php
+                        endforeach;
+                    endif;
+                ?>
+                <?php
+                if(isset($final)):?>
+                    <h3 class="cabecalho cabecalho-jogos">Final</h3>
+                <?php
+                    foreach ($final as $jogo):  
+                        if($jogo['partida_jogada']==0){
+                            $gols_mandante = '-';
+                            $gols_visitante = '-';
+                        }
+                        else{
+                            $gols_mandante = $jogo['gols_mandante'];
+                            $gols_visitante = $jogo['gols_visitante'];
+                        }
+                        require 'jogo.php';
+                ?>
+                
+                <?php
+                        endforeach;
+                    endif;
+                ?>
+                    
+                 
             </div>
         </article>
     </section>

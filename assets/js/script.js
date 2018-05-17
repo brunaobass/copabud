@@ -3,10 +3,14 @@ var id_participante = 1;
 var primeiro;
 var realizada;
 var id_edicao;
+var fase;
+const base_url_imagem = 'http://localhost/copabud/assets/images/';
 /******************
  *MODAL DE IMAGENS
  *****************/
 $(function(){
+    id_edicao = $("#id_edicao").val();
+    atualizaPlayoffs();
     $("#btn_trocar_imagem").on('click',function(){
         $("#imagem_usuario").trigger("click");
     });
@@ -59,27 +63,50 @@ $(function(){
 /*******************************
  * ATUALIZAÇÃO DE RESULTADOS NA PÁGINA CLASSIFICAÇÃO
  ******************************/
-    $(".gols-span").on('click',function(){
+    $(".gols-span, .penalti-span").on('click',function(){
        var campo_clicado = $(this);
-       var parent_parent = $(this).parent().parent();
-       var id_partida = parent_parent.find('.id_partida').val();
-       var partida_jogada = parent_parent.find('.partida_jogada').val();
-       id_edicao = $("#id_edicao").val();
+       var id_partida;
+       var parent_parent;
+       var classe_campo;
+       var gols_mandante = Array();;
+       var gols_visitante = Array();
+       
+       if(campo_clicado.parent().hasClass("penalti")){
+          //parent_parent = $(this).parent();
+          parent_parent = $(this).parent().parent().parent();
+          classe_campo = '.penalti-span';
+          id_partida = parent_parent.find('.id_playoff').val();
+          
+       }
+       else{
+          parent_parent = $(this).parent().parent();
+          classe_campo = '.gols-span';
+          id_partida = parent_parent.find('.id_partida').val();
+         
+          
+       }
+       
+       
+       
+       fase = parent_parent.find('.fase').val();
+       gols_mandante[0] = parent_parent.find(classe_campo).eq(0).html();
+       gols_visitante[0]= parent_parent.find(classe_campo).eq(1).html();
        
        console.log("ID da partida:"+id_partida);
+       console.log("Fase da partida:"+fase);
        
        var input = $(this).parent().find('input[type=text]');
        
        var gols = $(this).html();
-       var gols_mandante = Array();;
-       var gols_visitante = Array();
+       
        //PEGANDO OS GOLS A PARTIR DO HTML DO SPAN
-       gols_mandante[0] = parent_parent.find('.gols-span').eq(0).html();
-       gols_visitante[0]= parent_parent.find('.gols-span').eq(1).html();
+       
+       
 
        gols_mandante[1] = gols_mandante[0];
        gols_visitante[1] = gols_visitante[0];
-
+       console.log("GOLS 1:"+gols_mandante[1]);
+       console.log("GOLS 2:"+gols_visitante[1]);
 
        var regra = /^[0-9]+$/;
        $(this).hide();
@@ -103,8 +130,8 @@ $(function(){
 
                 if(gols.match(regra)){//verifica se o valor digitado foi um número inteiro
                     campo_clicado.html(gols);//caso seja, atualiza o resultado
-                    gols_mandante[1] = parent_parent.find('.gols-span').eq(0).html();
-                    gols_visitante[1]= parent_parent.find('.gols-span').eq(1).html();
+                    gols_mandante[1] = parent_parent.find(classe_campo).eq(0).html();
+                    gols_visitante[1]= parent_parent.find(classe_campo).eq(1).html();
                 }
                 else{
                     campo_clicado.html('-');//caso contrário não atualiza e insere o hífen para sinalizar que a partida
@@ -114,12 +141,24 @@ $(function(){
                 if(gols_mandante[1].match(regra) && gols_visitante[1].match(regra)){
                     //verifica se ambos os campos estão preenchidos com resultados numéricos
                     if(gols_mandante[0].match(regra) && gols_visitante[0].match(regra)){
-                        anularResultado(id_partida,gols_mandante[0],gols_visitante[0],parent_parent);
+                        if(classe_campo == '.penalti-span'){
+                            anularPenalti(id_partida,gols_mandante[0],gols_visitante[0]);
+                        }
+                        else{
+                            anularResultado(id_partida,gols_mandante[0],gols_visitante[0],parent_parent);
+                        }
+                        
                         console.log("CAMPO CLICADO:"+campo_clicado.html());
                     }
                     
                     if(campo_clicado.html() != '-'){
-                        salvarResultado(id_partida,gols_mandante[1],gols_visitante[1],parent_parent);
+                        if(classe_campo == '.penalti-span'){
+                            salvarPenalti(id_partida,gols_mandante[0],gols_visitante[0]);
+                        }
+                        else{
+                            salvarResultado(id_partida,gols_mandante[1],gols_visitante[1],parent_parent);
+                        }
+                        
                     }   
   
                 }
@@ -139,6 +178,7 @@ function salvarResultado(id_partida,gols_mandante,gols_visitante, parent_parent)
     var id_perdedor;
     var gols_vencedor;
     var gols_perdedor;
+    
     if(gols_mandante === gols_visitante){
         atualizaClassificacao(id_mandante,1,"empate",gols_mandante,gols_visitante,0);
         atualizaClassificacao(id_visitante,1,"empate",gols_visitante,gols_mandante,0);
@@ -159,11 +199,16 @@ function salvarResultado(id_partida,gols_mandante,gols_visitante, parent_parent)
         atualizaClassificacao(id_vencedor,3,"vitoria",gols_vencedor,gols_perdedor,0);
         atualizaClassificacao(id_perdedor,0,"derrota",gols_perdedor,gols_vencedor,0);
     }
+    
+    if(fase > 0){
+        
+        verificaPenalti(id_partida);
+    }
     //atualizaResultado(id_partida, id_mandante,id_visitante,gols_mandante,gols_visitante);
 }
 function anularResultado(id_partida,gols_mandante,gols_visitante,parent_parent){
     
-    cancelaPartida(id_partida);
+    cancelaPartida(id_partida,gols_mandante,gols_visitante);
     var id_mandante = parseInt(parent_parent.find('.id_mandante').val()) ;
     var id_visitante = parseInt(parent_parent.find('.id_visitante').val());
     var id_vencedor;
@@ -208,11 +253,53 @@ function salvarPartida(id_partida,gols_mandante,gols_visitante){
         }
     });
 }
-function cancelaPartida(id){
+function salvarPenalti(id_playoff,gols_time1,gols_time2){
+    console.log("\n\nEntrou em salvar penalti...");
+    
+    $.ajax({
+        url:'http://localhost/copabud/playoff/salva_penalti/',
+        type:'POST',
+        data:{
+            id_playoff:id_playoff,
+            gols_time1:gols_time1,
+            gols_time2:gols_time2
+        },
+        dataType:'json',
+        success:function(json){
+            console.log("Disputa de pênaltis salva com sucesso...");
+            console.log(json);
+        },
+        error:function(){
+            console.log("Disputa de pênaltis ao salvar partida...");
+        }
+    });
+}
+function anularPenalti(id_playoff){
+    console.log("\n\nEntrou em anular penalti...");
+    
+    $.ajax({
+        url:'http://localhost/copabud/playoff/anula_penalti/',
+        type:'POST',
+        data:{
+            id_playoff:id_playoff
+        },
+        success:function(){
+            //console.log("Partida salva com sucesso...");
+        },
+        error:function(){
+            //console.log("Erro ao salvar partida...");
+        }
+    });
+}
+function cancelaPartida(id,gols_mandante,gols_visitante){
     $.ajax({
         url:'http://localhost/copabud/partida/cancela_partida/',
         type:'POST',
-        data:{id:id},
+        data:{
+            id:id,
+            gols_mandante:gols_mandante,
+            gols_visitante:gols_visitante
+        },
         success:function(){
             //console.log("Partida cancelada com sucesso...");
         },
@@ -223,42 +310,105 @@ function cancelaPartida(id){
 }
 function atualizaClassificacao(id_equipe,pontos,tipo_resultado,gols_pro,gols_contra,anula){
     console.log('Tipo de resultado:'+tipo_resultado);
+    
+    
+    if(fase==0){
+        $.ajax({
+            url:'http://localhost/copabud/classificacao/atualiza_classificacao/',
+            type:'POST',
+            data:{
+                id_edicao:id_edicao,
+                id_equipe:id_equipe,
+                pontos:pontos,
+                tipo_resultado:tipo_resultado,
+                gols_pro:gols_pro,
+                gols_contra:gols_contra,
+                anula:anula,
+            },
+            dataType:'json',
+            success:function(json){
+              
+              for(var i in json){
+                  $('#classif-imagem-'+i).attr('src',(base_url_imagem+json[i].imagem));
+                  $('#classif-equipe-'+i).html(json[i].equipe);
+                  $('#classif-pontos-'+i).html(json[i].pontos);
+                  $('#classif-jogos-'+i).html(json[i].jogos);
+                  $('#classif-vitorias-'+i).html(json[i].vitorias);
+                  $('#classif-derrotas-'+i).html(json[i].derrotas);
+                  $('#classif-empates-'+i).html(json[i].empates);
+                  $('#classif-saldo_gols-'+i).html(json[i].saldo_gols);
+                  $('#classif-gols_pro-'+i).html(json[i].gols_pro);
+                  $('#classif-gols_contra-'+i).html(json[i].gols_contra);
+
+              }
+            },
+            error:function(){
+               console.log("Classificacao não foi atualizada"); 
+            }
+
+        });
+        
+        atualizaPlayoffs();
+    }
+}
+function atualizaPlayoffs(){
+    //verifica e atualiza os playoffs ao atualizar os resultados da primeira fase
+    
     $.ajax({
-        url:'http://localhost/copabud/classificacao/atualiza_classificacao/',
+        url:'http://localhost/copabud/classificacao/atualiza_playoffs',
         type:'POST',
         data:{
             id_edicao:id_edicao,
-            id_equipe:id_equipe,
-            pontos:pontos,
-            tipo_resultado:tipo_resultado,
-            gols_pro:gols_pro,
-            gols_contra:gols_contra,
-            anula:anula,
+            fase:fase
         },
         dataType:'json',
         success:function(json){
-          var base_url_imagem = 'http://localhost/copabud/assets/images/';
-          for(var i in json){
-              $('#classif-imagem-'+i).attr('src',(base_url_imagem+json[i].imagem));
-              $('#classif-equipe-'+i).html(json[i].equipe);
-              $('#classif-pontos-'+i).html(json[i].pontos);
-              $('#classif-jogos-'+i).html(json[i].jogos);
-              $('#classif-vitorias-'+i).html(json[i].vitorias);
-              $('#classif-derrotas-'+i).html(json[i].derrotas);
-              $('#classif-empates-'+i).html(json[i].empates);
-              $('#classif-saldo_gols-'+i).html(json[i].saldo_gols);
-              $('#classif-gols_pro-'+i).html(json[i].gols_pro);
-              $('#classif-gols_contra-'+i).html(json[i].gols_contra);
-              
-          }
-        },
-        error:function(){
-           console.log("Classificacao não foi atualizada"); 
-        }
+            console.log("Playoff atualizado\n");
+            var partidas = json.id_partida;
+            var mandantes = json.mandante;
+            var visitantes = json.visitante;
+            console.log("PARTIDA: "+mandantes);
+            for(var i =0; i<partidas.length;i++){
+                console.log("ID Partida: "+partidas[i]);
+                console.log("Mandante: "+mandantes[i].nome);
+                console.log("Visitante: "+visitantes[i].nome);
+
+                $('#imagem_mandante'+partidas[i]).attr('src',base_url_imagem+mandantes[i].imagem);
+                $('#sigla_mandante'+partidas[i]).html(mandantes[i].sigla);
+                $('#imagem_visitante'+partidas[i]).attr('src',base_url_imagem+visitantes[i].imagem);
+                $('#sigla_visitante'+partidas[i]).html(visitantes[i].sigla);
  
+            }
+        },
+        
+        error:function(){
+            console.log('Erro ao atualizar playoffs');
+        }
     });
 }
-
+function verificaPenalti(id_partida){
+    console.log('\nVerificando Penaltis.....');
+    $.ajax({
+        url:'http://localhost/copabud/classificacao/disputa_penaltis',
+        type:'POST',
+        data:{id_partida:id_partida},
+        dataType:'json',
+        success:function(json){
+            if(json.empate == 1){
+                console.log("Id da partida: "+json.id_partida);
+                console.log("Id do playoff: "+json.id_playoff);
+                $(".penalti.confronto"+json.id_partida).show();
+            }
+            else{
+                $(".penalti.confronto"+json.id_partida).hide();
+                anularPenalti(json.id_playoff);
+            }
+        },
+        error:function(){
+            console.log("Erro ao verificar disputa de pênaltis");
+        }
+    });
+}
 function salvarTime(e){
     e.preventDefault();
     var dados = new FormData(this);
@@ -366,7 +516,9 @@ function inserirTime(area_participantes){
        }
     });
 }
-
+function verificaVencedor(){
+    
+}
 function addBotoes(area_participantes){
     $(area_participantes).append("<button class='btn-confirmar'>Confirmar</button>");
 }
