@@ -16,7 +16,8 @@ class PlayoffController extends Controller{
         
         $playoff = new Playoffs();
         //verifica se é uma partida da segunda fase, caso seja pega o id_playoff
-        
+        echo "<br>Gols time 1: ".$gols_time1;
+        echo "<br>Gols time 2: ".$gols_time2;
         $playoff->atualizaPenalti($id,$gols_time1,$gols_time2);
         $confronto = $playoff->getResultadoPenalti($id);
         $equipes = new Equipes();
@@ -32,10 +33,22 @@ class PlayoffController extends Controller{
     
     public function anula_penalti(){
         if(isset($_POST)){
-            $id = filter_input(INPUT_POST, 'id',FILTER_VALIDATE_INT);
+            $id = filter_input(INPUT_POST, 'id_playoff'
+                    . '',FILTER_VALIDATE_INT);
         }
         
         $playoff = new Playoffs();       
         $playoff->cancelaPenalti($id);
+    }
+    
+    public function resultado_penalti(){
+        if(isset($_POST)){
+            $id = filter_input(INPUT_POST, 'id_playoff',FILTER_VALIDATE_INT);
+        }
+        
+        $playoff = new Playoffs();       
+        
+        $resultado = $playoff->getResultadoPenalti($id);
+        echo json_encode($resultado);
     }
 }

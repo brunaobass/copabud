@@ -32,7 +32,10 @@ class partidaController extends Controller{
         
         $partida = new Partidas();
         if($partida->getFase($id)>0){
-            $this->atualizaGolsPlayoffs($partida,$id, $gols_mandante*(-1), $gols_visitante*(-1),-1);    
+            $playoffs = new Playoffs();
+            $id_playoff = $partida->getIDPlayoff($id);
+            $this->atualizaGolsPlayoffs($partida,$id, $gols_mandante*(-1), $gols_visitante*(-1),-1); 
+            $playoffs->cancelaPenalti($id_playoff);
         }
         
         $partida->cancelaPartida($id);

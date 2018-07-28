@@ -77,6 +77,16 @@ class Playoffs extends Model{
         return $placar[0];
     }
     
+    public function getDisputaPenaltis($id){
+        $disputa = $this->where(
+                array("disputa_penaltis"), 
+                array("id"), 
+                array($id)
+            );
+
+        return $disputa[0]["disputa_penaltis"];
+    }
+    
     public function atualizaPenalti($id,$gols_time1,$gols_time2){
         
         $sql = "UPDATE playoffs SET penaltis_time1 = :gols_time1, penaltis_time2 = :gols_time2, disputa_penaltis = 1"

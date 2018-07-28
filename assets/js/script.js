@@ -142,7 +142,7 @@ $(function(){
                     //verifica se ambos os campos estão preenchidos com resultados numéricos
                     if(gols_mandante[0].match(regra) && gols_visitante[0].match(regra)){
                         if(classe_campo == '.penalti-span'){
-                            anularPenalti(id_partida,gols_mandante[0],gols_visitante[0]);
+                            anularPenalti(id_partida);
                         }
                         else{
                             anularResultado(id_partida,gols_mandante[0],gols_visitante[0],parent_parent);
@@ -153,7 +153,9 @@ $(function(){
                     
                     if(campo_clicado.html() != '-'){
                         if(classe_campo == '.penalti-span'){
-                            salvarPenalti(id_partida,gols_mandante[0],gols_visitante[0]);
+                            salvarPenalti(id_partida,gols_mandante[1],gols_visitante[1]);
+                            console.log("Gols time 1: "+gols_mandante[1]);
+                            console.log("Gols time 2: "+gols_visitante[1]);
                         }
                         else{
                             salvarResultado(id_partida,gols_mandante[1],gols_visitante[1],parent_parent);
@@ -367,16 +369,23 @@ function atualizaPlayoffs(){
             var partidas = json.id_partida;
             var mandantes = json.mandante;
             var visitantes = json.visitante;
+            var ida_volta = json.ida_volta;
             console.log("PARTIDA: "+mandantes);
             for(var i =0; i<partidas.length;i++){
                 console.log("ID Partida: "+partidas[i]);
                 console.log("Mandante: "+mandantes[i].nome);
                 console.log("Visitante: "+visitantes[i].nome);
+                console.log("IDA VOLTA:"+ida_volta[i]);
 
                 $('#imagem_mandante'+partidas[i]).attr('src',base_url_imagem+mandantes[i].imagem);
                 $('#sigla_mandante'+partidas[i]).html(mandantes[i].sigla);
                 $('#imagem_visitante'+partidas[i]).attr('src',base_url_imagem+visitantes[i].imagem);
                 $('#sigla_visitante'+partidas[i]).html(visitantes[i].sigla);
+                
+                if(ida_volta[i] == 2){
+                    verificaPenalti(partidas[i]);
+                }
+                
  
             }
         },
@@ -395,9 +404,14 @@ function verificaPenalti(id_partida){
         dataType:'json',
         success:function(json){
             if(json.empate == 1){
-                console.log("Id da partida: "+json.id_partida);
-                console.log("Id do playoff: "+json.id_playoff);
                 $(".penalti.confronto"+json.id_partida).show();
+                if(json.disputa_penaltis == 1){
+                    console.log("Disputa de pênaltis realizada..."+json.disputa_penaltis);
+                    atualizaPenalti(json.id_playoff,id_partida);
+                }
+                else{
+                    console.log("Molusco:"+json.disputa_penaltis);
+                }
             }
             else{
                 $(".penalti.confronto"+json.id_partida).hide();
@@ -406,6 +420,27 @@ function verificaPenalti(id_partida){
         },
         error:function(){
             console.log("Erro ao verificar disputa de pênaltis");
+        }
+    });
+}
+function atualizaPenalti(id_playoff,id_partida){
+    $.ajax({
+        url:'http://localhost/copabud/playoff/resultado_penalti/',
+        type:'POST',
+        data:{
+            id_playoff:id_playoff,
+        },
+        dataType:'json',
+        success:function(json){
+            console.log("Resultado da disputa de pênaltis pegos com sucesso...");
+            console.log(json);
+            console.log("ID PLAYOFF: "+id_partida);
+            console.log("#penalti_mandante"+id_playoff);
+            $("#penalti_mandante"+id_partida).html(json.penaltis_time1);
+            $("#penalti_visitante"+id_partida).html(json.penaltis_time2);
+        },
+        error:function(){
+            console.log("Erro ao pegar o resultado dos pênaltis...");
         }
     });
 }

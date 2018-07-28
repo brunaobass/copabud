@@ -34,25 +34,6 @@ class classificacaoController extends Controller{
         $dados['final'] = $partidas->getPartidas($id_edicao, DECISAO);
         $fase = 0;
         
-        /*if($partidas->verificaFimFase($id_edicao,0)){
-            $classificados = $this->getClassificados($id_edicao);
-            
-            $num_fases_playoff = (count($classificados)/2);
-            $fase = $this->getFase($classificados, 4);
-            
-            $fase_atual = $this->verificaFase($id_edicao, $fase,$num_fases_playoff);
-            echo '<br>Fase atual: '.$fase_atual.'<br>';
-            $playoffs = new Partidas();
-            
-            
-            for($i = 0; $i< count($lista_playoffs);$i++){ 
-                $lista_playoffs[$i]['mandante'] = $equipes->getEquipe($lista_playoffs[$i]['id_mandante']);
-                $lista_playoffs[$i]['visitante'] = $equipes->getEquipe($lista_playoffs[$i]['id_visitante']);   
-            }
-            
-            
-        }*/
-        
         $lista_partidas = $partidas->getPartidas($id_edicao,0);
         
         //pegando os dados das equipes do banco de dados a partir do id_edicao
@@ -120,9 +101,11 @@ class classificacaoController extends Controller{
                 $mandantes = array();
                 $visitantes = array();
                 $ids_partida = array();
+                $ida_volta = array();
                 
                 for($i = 0; $i < count($partidas); $i++ ){
                     $ids_partida[$i] = $partidas[$i]['id']; 
+                    $ida_volta[$i] = $partidas[$i]['ida_volta'];
                     $mandantes[$i] = $equipes->getEquipe($partidas[$i]['id_mandante']);
                     $visitantes[$i] = $equipes->getEquipe($partidas[$i]['id_visitante']);
                 }
@@ -130,7 +113,8 @@ class classificacaoController extends Controller{
                 $json = array(
                     "id_partida"=>$ids_partida,
                     "mandante"=>$mandantes,
-                    "visitante"=>$visitantes
+                    "visitante"=>$visitantes,
+                    "ida_volta"=>$ida_volta
                 );
             }
         }
@@ -171,7 +155,7 @@ class classificacaoController extends Controller{
         
         foreach ($partidas as $partida){
             if($partida['disputa_penaltis'] == 1){//se ocorreu disputa de pênaltis
-                if($partida['penaltis_mandante'] == $partida['penaltis_visitante']){
+                if($partida['penaltis_time1'] == $partida['penaltis_time2']){
                     $_SESSION['erro'] = "Não existe empates em disputas de pênaltis";
                     header("Location: ".BASE_URL."classificacao/index");
                     exit;
@@ -306,13 +290,16 @@ class classificacaoController extends Controller{
         
         $playoff = new Playoffs();
         $partidas_jogadas = $playoff->getJogosFinalizados($id_playoff);
-        if($partidas_jogadas == 2){
+        if(($partidas_jogadas == 2)){
             if($this->verificaEmpate($id_playoff,$playoff)){
                 //o valor 1 indica que houve empate entra as somas dos gols
-                $json["empate"] = 1;    
+                $json["empate"] = 1;
+                $json["disputa_penaltis"] = $playoff->getDisputaPenaltis($id_playoff);
             }
             else{
                 $json["empate"] = 0;
+                $json['vencedor'] = $this->verificaVencedor($id_playoff, $playoff);
+                
             }
         }
         
@@ -331,16 +318,16 @@ class classificacaoController extends Controller{
         return false;
     }
     
-    private function verificaPenaltis($id_playoff,$playoff){
+    private function verificaVencedor($id_playoff,$playoff){
         //verifica se a disputa de pênaltis já ocorreu e retorna o vencedor, caso tenha ocorrido
         //caso contrário
-        $resultado = $playoff->where(
+        /*$resultado = $playoff->where(
                 array("total_gols_time1","total_gols_time2"),
                 array("id"),
                 array($id_playoff)
             );
         echo '<br> Entrou no método verifica penaltis...<br>';
         var_dump($resultado);
-        exit;
+        exit;*/
     }
 }

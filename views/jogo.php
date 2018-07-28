@@ -8,7 +8,7 @@
         <input type="hidden" class="id_playoff" value="<?=$jogo['id_playoffs']?>">
         <div class="penalti confronto<?=$jogo['id']?>">
             <span class="float-left">Penaltis</span>
-            <span class="penalti-span float-left" id="penalti_mandante<?=$jogo['id_playoffs']?>">-</span>
+            <span class="penalti-span float-left" id="penalti_mandante<?=$jogo['id']?>">-</span>
             <input type="text" class="gols-input float-left">
             
         </div>
@@ -47,7 +47,7 @@
         <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png"
              id="imagem_visitante<?=$jogo['id']?>"> 
         <div class="penalti confronto<?=$jogo['id']?>">
-            <span class="penalti-span float-left" id="penalti_visitante<?=$jogo['id_playoffs']?>">-</span>
+            <span class="penalti-span float-left" id="penalti_visitante<?=$jogo['id']?>">-</span>
             <input type="text" class="gols-input float-left">
         </div>
         
