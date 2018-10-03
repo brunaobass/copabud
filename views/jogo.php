@@ -6,13 +6,17 @@
 
     <figure class="mandante float-left">
         <input type="hidden" class="id_playoff" value="<?=$jogo['id_playoffs']?>">
-        <div class="penalti confronto<?=$jogo['id']?>">
+        <?php
+            if($jogo['ida_volta'] == 2):
+        ?>
+        <div class="penalti confronto<?=$jogo['id_playoffs']?>">
             <span class="float-left">Penaltis</span>
             <span class="penalti-span float-left" id="penalti_mandante<?=$jogo['id']?>">-</span>
-            <input type="text" class="gols-input float-left">
-            
+            <input type="text" class="gols-input float-left">          
         </div>
-        
+        <?php
+            endif;
+        ?>
         <figcaption class="float-right" id="sigla_mandante<?=$jogo['id']?>">
             MAN
         </figcaption>
@@ -45,12 +49,17 @@
         <figcaption class="float-left" id="sigla_visitante<?=$jogo['id']?>">
             VIS</figcaption>
         <img class="float-left" src="<?=BASE_URL?>assets/images/clube.png"
-             id="imagem_visitante<?=$jogo['id']?>"> 
-        <div class="penalti confronto<?=$jogo['id']?>">
-            <span class="penalti-span float-left" id="penalti_visitante<?=$jogo['id']?>">-</span>
-            <input type="text" class="gols-input float-left">
-        </div>
-        
+             id="imagem_visitante<?=$jogo['id']?>">
+        <?php
+            if($jogo['ida_volta'] == 2):
+        ?>
+            <div class="penalti confronto<?=$jogo['id_playoffs']?>">
+                <span class="penalti-span float-left" id="penalti_visitante<?=$jogo['id']?>">-</span>
+                <input type="text" class="gols-input float-left">
+            </div>
+        <?php
+            endif;
+        ?>
     </figure>
     <div class="clear"></div>
     <div class="partida-rodape"></div>

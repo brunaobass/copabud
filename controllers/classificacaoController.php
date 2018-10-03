@@ -168,6 +168,8 @@ class classificacaoController extends Controller{
                 }    
             }
         }
+        var_dump($classificados);
+        exit;
         return $classificados;
     }
 

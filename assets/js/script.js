@@ -100,9 +100,6 @@ $(function(){
        var gols = $(this).html();
        
        //PEGANDO OS GOLS A PARTIR DO HTML DO SPAN
-       
-       
-
        gols_mandante[1] = gols_mandante[0];
        gols_visitante[1] = gols_visitante[0];
        console.log("GOLS 1:"+gols_mandante[1]);
@@ -286,10 +283,10 @@ function anularPenalti(id_playoff){
             id_playoff:id_playoff
         },
         success:function(){
-            //console.log("Partida salva com sucesso...");
+            console.log("Disputa de pênaltis anulada com sucesso...");
         },
         error:function(){
-            //console.log("Erro ao salvar partida...");
+            //console.log("Erro ao anular disputa de pênaltis...");
         }
     });
 }
@@ -404,7 +401,7 @@ function verificaPenalti(id_partida){
         dataType:'json',
         success:function(json){
             if(json.empate == 1){
-                $(".penalti.confronto"+json.id_partida).show();
+                $(".penalti.confronto"+json.id_playoff).show();
                 if(json.disputa_penaltis == 1){
                     console.log("Disputa de pênaltis realizada..."+json.disputa_penaltis);
                     atualizaPenalti(json.id_playoff,id_partida);
@@ -414,7 +411,7 @@ function verificaPenalti(id_partida){
                 }
             }
             else{
-                $(".penalti.confronto"+json.id_partida).hide();
+                $(".penalti.confronto"+json.id_playoff).hide();
                 anularPenalti(json.id_playoff);
             }
         },

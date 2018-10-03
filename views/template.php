@@ -27,7 +27,7 @@ and open the template in the editor.
                     </figure>
                     <div class="icones">
                         <button id="btn-fechar"><i class="fa fa-times"></i></button>
-                        <button id="btn-menu"><img src="<?=BASE_URL?>assets/images/list.png" alt="botão de menu"></button>
+                        <button id="btn-menu"><i class="fa fa-bars"></i></button>
                     </div>
                     <nav class="menu-navegacao">
                         <ul class="menu">
